@@ -1,0 +1,1369 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nirvivad Case Flow</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --ink:#151b2c;
+    --ink-soft:#4d5670;
+    --ink-faint:#8890a6;
+    --bg:#f2f4f9;
+    --surface:#ffffff;
+    --surface-sunken:#e9ecf5;
+    --border:#dce1ee;
+    --border-strong:#c2cae0;
+    --blue:#1749b8;
+    --blue-deep:#0d2f7a;
+    --blue-soft:#e4ecfc;
+    --sky:#2e8fe0;
+    --sky-soft:#e2f1fd;
+    --gold:#c9922e;
+    --gold-soft:#f7ecd8;
+    --forest:#237a56;
+    --forest-soft:#dff0e7;
+    --brick:#c0432a;
+    --brick-soft:#fbe5df;
+    --shadow: 0 1px 2px rgba(13,29,74,.06), 0 6px 20px rgba(13,29,74,.08);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#eaedf7; --ink-soft:#b7bfd6; --ink-faint:#7d87a3;
+      --bg:#0c1220; --surface:#131b2f; --surface-sunken:#1a2440;
+      --border:#263252; --border-strong:#354672;
+      --blue:#5f8cf0; --blue-deep:#9db6f7; --blue-soft:#1b2748;
+      --sky:#6fb6f2; --sky-soft:#152540;
+      --gold:#e0ac53; --gold-soft:#332411;
+      --forest:#5fc79a; --forest-soft:#12291f;
+      --brick:#e5876c; --brick-soft:#331c15;
+      --shadow: 0 1px 2px rgba(0,0,0,.35), 0 8px 24px rgba(0,0,0,.4);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#eaedf7; --ink-soft:#b7bfd6; --ink-faint:#7d87a3;
+    --bg:#0c1220; --surface:#131b2f; --surface-sunken:#1a2440;
+    --border:#263252; --border-strong:#354672;
+    --blue:#5f8cf0; --blue-deep:#9db6f7; --blue-soft:#1b2748;
+    --sky:#6fb6f2; --sky-soft:#152540;
+    --gold:#e0ac53; --gold-soft:#332411;
+    --forest:#5fc79a; --forest-soft:#12291f;
+    --brick:#e5876c; --brick-soft:#331c15;
+    --shadow: 0 1px 2px rgba(0,0,0,.35), 0 8px 24px rgba(0,0,0,.4);
+    color-scheme: dark;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{ height:100%; margin:0; }
+  img{ max-width:100%; }
+  [hidden]{ display:none !important; }
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:'Public Sans', system-ui, sans-serif;
+    font-size:14px; line-height:1.5;
+  }
+  h1,h2,h3,.display{ font-family:'Fraunces', Georgia, serif; text-wrap:balance; letter-spacing:-0.01em; }
+  .mono{ font-family:'JetBrains Mono', ui-monospace, monospace; letter-spacing:-0.01em; }
+  button{ font-family:inherit; }
+  a{ color:var(--blue); }
+  ::selection{ background:var(--blue-soft); }
+  :focus-visible{ outline:2px solid var(--blue); outline-offset:2px; }
+  #app{ min-height:100%; display:flex; flex-direction:column; }
+
+  /* ---------- Marketing site ---------- */
+  .site-header{
+    position:sticky; top:env(safe-area-inset-top,0px); z-index:40;
+    background:var(--surface); border-bottom:1px solid var(--border);
+    padding:14px 24px; padding-top:calc(14px + env(safe-area-inset-top,0px));
+    display:flex; align-items:center; gap:20px;
+  }
+  .brand{ display:flex; align-items:center; gap:9px; font-family:'Fraunces',serif; font-weight:700; font-size:18px; white-space:nowrap; color:var(--ink); }
+  .brand .mark{
+    width:28px; height:28px; border-radius:8px;
+    background:linear-gradient(155deg,var(--sky),var(--blue-deep));
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces',serif; font-weight:700; font-size:14px; color:#fff; flex-shrink:0;
+  }
+  .site-nav{ display:flex; gap:22px; flex:1; }
+  .site-nav a{ color:var(--ink-soft); text-decoration:none; font-weight:600; font-size:13.5px; cursor:pointer; }
+  .site-nav a:hover{ color:var(--ink); }
+  @media (max-width:760px){ .site-nav{ display:none; } }
+
+  .site-main{ flex:1; }
+  .hero{
+    padding:64px 24px 56px; text-align:center;
+    background: radial-gradient(1100px 420px at 50% -120px, var(--blue-soft), transparent 70%);
+  }
+  .hero .eyebrow{ justify-content:center; }
+  .hero h1{ font-size:clamp(30px,5vw,46px); font-weight:600; max-width:760px; margin:10px auto 14px; }
+  .hero .lead{ max-width:560px; margin:0 auto 26px; color:var(--ink-soft); font-size:15.5px; }
+  .hero .cta-row{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+
+  .stat-strip{
+    display:flex; justify-content:center; gap:48px; flex-wrap:wrap;
+    padding:28px 24px; border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+    background:var(--surface);
+  }
+  .stat-strip .s{ text-align:center; }
+  .stat-strip .s .n{ font-family:'Fraunces',serif; font-weight:700; font-size:26px; color:var(--blue); }
+  .stat-strip .s .l{ font-size:11.5px; color:var(--ink-faint); font-weight:600; }
+
+  .site-section{ max-width:1080px; margin:0 auto; padding:56px 24px; }
+  .site-section .head{ text-align:center; max-width:600px; margin:0 auto 34px; }
+  .site-section .head h2{ font-size:26px; font-weight:600; margin:8px 0 8px; }
+  .site-section .head p{ color:var(--ink-soft); font-size:14px; }
+
+  .role-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+  @media (max-width:900px){ .role-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:520px){ .role-grid{ grid-template-columns:1fr; } }
+  .role-card{ background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:18px; box-shadow:var(--shadow); }
+  .role-card .ic{ width:38px; height:38px; border-radius:10px; background:var(--blue-soft); color:var(--blue); display:flex; align-items:center; justify-content:center; font-size:17px; margin-bottom:10px; }
+  .role-card h3{ font-size:14.5px; margin:0 0 4px; }
+  .role-card p{ font-size:12.5px; color:var(--ink-faint); margin:0; }
+
+  .flow-steps{ display:flex; gap:18px; counter-reset:flow; }
+  @media (max-width:760px){ .flow-steps{ flex-direction:column; } }
+  .flow-step{ flex:1; position:relative; }
+  .flow-step .num{
+    width:32px; height:32px; border-radius:50%; background:var(--blue); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; margin-bottom:10px;
+  }
+  .flow-step h3{ font-size:14.5px; margin:0 0 4px; }
+  .flow-step p{ font-size:12.5px; color:var(--ink-faint); margin:0; }
+
+  .site-footer{ border-top:1px solid var(--border); padding:30px 24px; text-align:center; color:var(--ink-faint); font-size:12px; background:var(--surface); }
+
+  /* ---------- Auth screens ---------- */
+  .auth-wrap{ flex:1; display:flex; align-items:center; justify-content:center; padding:40px 20px; background:var(--bg); }
+  .auth-card{ width:100%; max-width:380px; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:30px 28px; box-shadow:var(--shadow); }
+  .auth-card .brand{ justify-content:center; margin-bottom:22px; }
+  .auth-card h1{ font-size:20px; font-weight:600; text-align:center; margin:0 0 6px; }
+  .auth-card .sub{ text-align:center; color:var(--ink-soft); font-size:13px; margin-bottom:22px; }
+  .otp-row{ display:flex; gap:8px; justify-content:center; margin-bottom:16px; }
+  .otp-row input{
+    width:42px; height:50px; text-align:center; font-size:19px; font-weight:700;
+    border:1px solid var(--border-strong); border-radius:9px; background:var(--surface); color:var(--ink);
+  }
+  .otp-row input:focus{ outline:2px solid var(--blue); outline-offset:1px; }
+  .auth-foot{ text-align:center; font-size:12.5px; color:var(--ink-faint); margin-top:14px; }
+  .auth-foot a{ font-weight:600; cursor:pointer; }
+
+  .role-pick-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:8px; }
+  @media (max-width:420px){ .role-pick-grid{ grid-template-columns:1fr; } }
+  .role-pick{ border:1px solid var(--border); border-radius:11px; padding:12px; cursor:pointer; text-align:left; background:var(--surface); }
+  .role-pick .ic{ font-size:17px; margin-bottom:4px; }
+  .role-pick .t{ font-weight:700; font-size:12.5px; }
+  .role-pick:hover{ border-color:var(--blue); }
+  .role-pick.checked{ border-color:var(--blue); background:var(--blue-soft); }
+
+  /* ---------- App shell ---------- */
+  .topbar{
+    position:sticky; top:env(safe-area-inset-top,0px); z-index:40;
+    background:var(--blue-deep); color:#fff;
+    padding:10px 18px; padding-top:calc(10px + env(safe-area-inset-top,0px));
+    display:flex; align-items:center; gap:14px; box-shadow:var(--shadow);
+  }
+  .topbar .brand{ color:#fff; }
+  .topbar-spacer{ flex:1; }
+  .role-select-wrap{ position:relative; }
+  select.role-select{
+    appearance:none; background:rgba(255,255,255,.12); color:#fff;
+    border:1px solid rgba(255,255,255,.24); border-radius:8px;
+    padding:7px 30px 7px 12px; font-size:13px; font-weight:600; cursor:pointer; max-width:46vw;
+  }
+  select.role-select option{ color:#111; }
+  .role-select-wrap::after{
+    content:"▾"; position:absolute; right:10px; top:50%; transform:translateY(-50%);
+    font-size:10px; color:rgba(255,255,255,.7); pointer-events:none;
+  }
+  .badge-verified{
+    display:flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600;
+    background:rgba(95,199,154,.18); border:1px solid rgba(95,199,154,.4);
+    color:#bdedd6; padding:5px 9px; border-radius:999px; white-space:nowrap;
+  }
+  .badge-verified .dot{ width:6px; height:6px; border-radius:50%; background:#5fc79a; }
+  .bell{
+    position:relative; width:32px; height:32px; border-radius:8px; border:none;
+    background:rgba(255,255,255,.1); color:#fff; cursor:pointer; font-size:15px;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .bell:hover{ background:rgba(255,255,255,.18); }
+  .bell .pip{ position:absolute; top:4px; right:5px; width:8px; height:8px; border-radius:50%; background:var(--gold); border:1.5px solid var(--blue-deep); }
+  .notif-panel{
+    position:absolute; right:18px; top:52px; width:320px; max-width:calc(100vw - 36px);
+    background:var(--surface); border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); z-index:60; overflow:hidden;
+  }
+  .notif-panel .h{ padding:12px 14px; border-bottom:1px solid var(--border); font-weight:700; font-size:13px; }
+  .notif-item{ padding:11px 14px; border-bottom:1px solid var(--border); font-size:12.5px; }
+  .notif-item:last-child{ border-bottom:none; }
+  .notif-item .t{ font-weight:600; margin-bottom:2px; }
+  .notif-item .d{ color:var(--ink-faint); font-size:11.5px; }
+
+  .body-row{ flex:1; display:flex; min-height:0; }
+  .rail{ width:220px; flex-shrink:0; background:var(--surface); border-right:1px solid var(--border); padding:16px 10px; display:flex; flex-direction:column; gap:2px; }
+  .rail .rail-label{ font-size:10.5px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-faint); padding:8px 10px 6px; }
+  .rail button.nav-item{ display:flex; align-items:center; gap:9px; text-align:left; border:none; background:none; padding:9px 10px; border-radius:8px; font-size:13px; font-weight:600; color:var(--ink-soft); cursor:pointer; }
+  .rail button.nav-item .ic{ width:17px; text-align:center; opacity:.8; }
+  .rail button.nav-item:hover{ background:var(--surface-sunken); color:var(--ink); }
+  .rail button.nav-item.active{ background:var(--blue); color:#fff; }
+
+  main{ flex:1; min-width:0; padding:24px 26px 60px; overflow-y:auto; }
+  .container{ max-width:1080px; margin:0 auto; }
+
+  .eyebrow{ display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); margin-bottom:6px; }
+  .page-head{ margin-bottom:22px; }
+  .page-head h1{ font-size:26px; font-weight:600; margin:0 0 4px; }
+  .page-head .sub{ color:var(--ink-soft); font-size:13.5px; }
+
+  .grid{ display:grid; gap:14px; }
+  .grid-4{ grid-template-columns:repeat(4,1fr); }
+  .grid-3{ grid-template-columns:repeat(3,1fr); }
+  .grid-2{ grid-template-columns:1fr 1fr; }
+  @media (max-width:900px){ .grid-4{grid-template-columns:repeat(2,1fr);} .grid-3{grid-template-columns:repeat(2,1fr);} .grid-2{grid-template-columns:1fr;} }
+
+  .card{ background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:16px; box-shadow:var(--shadow); }
+  .card h3{ font-size:14px; font-weight:600; margin:0 0 3px; }
+
+  .stat-tile .num{ font-family:'Fraunces',serif; font-size:28px; font-weight:600; line-height:1; margin:2px 0 4px; font-variant-numeric:tabular-nums; }
+  .stat-tile .lbl{ font-size:12px; color:var(--ink-soft); font-weight:600; }
+  .stat-tile .delta{ font-size:11px; margin-top:6px; font-weight:600; }
+  .delta.up{ color:var(--forest); } .delta.warn{ color:var(--gold); } .delta.down{ color:var(--brick); }
+
+  .pill{ display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:700; padding:4px 9px; border-radius:999px; white-space:nowrap; letter-spacing:.01em; }
+  .pill .dot{ width:6px; height:6px; border-radius:50%; }
+  .pill.draft{ background:var(--surface-sunken); color:var(--ink-soft); } .pill.draft .dot{ background:var(--ink-faint); }
+  .pill.submitted{ background:var(--sky-soft); color:var(--sky); } .pill.submitted .dot{ background:var(--sky); }
+  .pill.assigned{ background:var(--sky-soft); color:var(--sky); } .pill.assigned .dot{ background:var(--sky); }
+  .pill.queue{ background:var(--sky-soft); color:var(--sky); } .pill.queue .dot{ background:var(--sky); }
+  .pill.clarification{ background:var(--gold-soft); color:var(--gold); } .pill.clarification .dot{ background:var(--gold); }
+  .pill.verification{ background:var(--gold-soft); color:var(--gold); } .pill.verification .dot{ background:var(--gold); }
+  .pill.review{ background:var(--gold-soft); color:var(--gold); } .pill.review .dot{ background:var(--gold); }
+  .pill.approved{ background:var(--forest-soft); color:var(--forest); } .pill.approved .dot{ background:var(--forest); }
+  .pill.rejected{ background:var(--brick-soft); color:var(--brick); } .pill.rejected .dot{ background:var(--brick); }
+  .pill.closed{ background:var(--surface-sunken); color:var(--ink-soft); } .pill.closed .dot{ background:var(--ink-faint); }
+
+  .tag-indicative{ display:inline-flex; align-items:center; gap:4px; font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--gold); border:1px solid var(--gold); border-radius:5px; padding:1.5px 5px; vertical-align:1px; }
+
+  .btn{ display:inline-flex; align-items:center; justify-content:center; gap:6px; border-radius:9px; border:1px solid var(--border-strong); background:var(--surface); color:var(--ink); font-weight:600; font-size:13px; padding:9px 15px; cursor:pointer; }
+  .btn:hover{ background:var(--surface-sunken); }
+  .btn-primary{ background:var(--blue); border-color:var(--blue); color:#fff; }
+  .btn-primary:hover{ background:var(--blue-deep); border-color:var(--blue-deep); }
+  .btn-accent{ background:var(--gold); border-color:var(--gold); color:#251a06; }
+  .btn-accent:hover{ filter:brightness(1.06); }
+  .btn-danger{ background:var(--surface); border-color:var(--brick); color:var(--brick); }
+  .btn-danger:hover{ background:var(--brick-soft); }
+  .btn-ghost{ background:transparent; border-color:transparent; color:var(--ink-soft); }
+  .btn-lg{ padding:12px 22px; font-size:14.5px; border-radius:10px; }
+  .btn-sm{ padding:6px 11px; font-size:12px; }
+  .btn:disabled{ opacity:.45; cursor:not-allowed; }
+  .btn-block{ width:100%; }
+
+  .case-row{ display:flex; align-items:center; gap:12px; padding:13px 14px; border:1px solid var(--border); border-radius:10px; background:var(--surface); margin-bottom:8px; cursor:pointer; }
+  .case-row:hover{ border-color:var(--border-strong); box-shadow:var(--shadow); }
+  .case-row .ref{ font-weight:700; font-size:12.5px; width:112px; flex-shrink:0; }
+  .case-row .info{ flex:1; min-width:0; }
+  .case-row .info .t{ font-weight:600; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .case-row .info .m{ font-size:11.5px; color:var(--ink-faint); margin-top:2px; }
+  .case-row .side{ flex-shrink:0; display:flex; align-items:center; gap:10px; }
+
+  .timeline{ position:relative; padding-left:26px; }
+  .timeline::before{ content:""; position:absolute; left:9px; top:6px; bottom:6px; width:2px; background:var(--border); }
+  .tl-step{ position:relative; padding-bottom:20px; }
+  .tl-step:last-child{ padding-bottom:0; }
+  .tl-step::before{ content:""; position:absolute; left:-26px; top:2px; width:18px; height:18px; border-radius:50%; background:var(--surface); border:2px solid var(--border-strong); }
+  .tl-step.done::before{ background:var(--forest); border-color:var(--forest); }
+  .tl-step.current::before{ background:var(--gold); border-color:var(--gold); box-shadow:0 0 0 4px var(--gold-soft); }
+  .tl-step .tt{ font-weight:600; font-size:13px; }
+  .tl-step .td{ font-size:12px; color:var(--ink-faint); margin-top:2px; }
+
+  .field{ margin-bottom:14px; }
+  .field label{ display:block; font-size:12.5px; font-weight:600; margin-bottom:5px; }
+  .field .hint{ font-size:11px; color:var(--ink-faint); margin-top:4px; }
+  .field input[type=text], .field input[type=number], .field input[type=date], .field input[type=email], .field select, .field textarea{
+    width:100%; border:1px solid var(--border-strong); background:var(--surface); color:var(--ink); border-radius:8px; padding:9px 11px; font-size:13px; font-family:inherit;
+  }
+  .field textarea{ resize:vertical; min-height:70px; }
+  .field input:focus, .field select:focus, .field textarea:focus{ outline:2px solid var(--blue); outline-offset:1px; }
+  .radio-group{ display:flex; flex-direction:column; gap:8px; }
+  .radio-opt{ display:flex; align-items:flex-start; gap:9px; padding:10px 11px; border:1px solid var(--border); border-radius:9px; cursor:pointer; }
+  .radio-opt:has(input:checked){ border-color:var(--blue); background:var(--blue-soft); }
+  .radio-opt input{ margin-top:2px; }
+  .radio-opt .ot{ font-weight:600; font-size:13px; }
+  .radio-opt .od{ font-size:11.5px; color:var(--ink-faint); }
+
+  .stepper{ display:flex; gap:4px; margin-bottom:22px; flex-wrap:wrap; }
+  .step-chip{ display:flex; align-items:center; gap:6px; font-size:11px; font-weight:700; padding:6px 10px; border-radius:999px; background:var(--surface-sunken); color:var(--ink-faint); white-space:nowrap; }
+  .step-chip .n{ width:16px; height:16px; border-radius:50%; background:var(--border-strong); color:var(--surface); display:flex; align-items:center; justify-content:center; font-size:9.5px; }
+  .step-chip.done{ color:var(--forest); background:var(--forest-soft); } .step-chip.done .n{ background:var(--forest); }
+  .step-chip.active{ color:var(--blue); background:var(--blue-soft); } .step-chip.active .n{ background:var(--blue); color:#fff; }
+
+  .upload-slot{ display:flex; align-items:center; justify-content:space-between; gap:10px; border:1px dashed var(--border-strong); border-radius:9px; padding:11px 13px; margin-bottom:8px; }
+  .upload-slot.uploaded{ border-style:solid; border-color:var(--forest); background:var(--forest-soft); }
+  .upload-slot .ut{ font-size:12.5px; font-weight:600; }
+  .upload-slot .req{ font-size:10.5px; color:var(--brick); font-weight:700; text-transform:uppercase; margin-left:6px; }
+  .upload-slot .opt{ font-size:10.5px; color:var(--ink-faint); font-weight:700; text-transform:uppercase; margin-left:6px; }
+
+  .divider{ height:1px; background:var(--border); margin:20px 0; }
+
+  .callout{ border-radius:10px; padding:12px 14px; font-size:12.5px; display:flex; gap:10px; align-items:flex-start; }
+  .callout.info{ background:var(--sky-soft); color:var(--ink); border:1px solid var(--border); }
+  .callout.warn{ background:var(--gold-soft); border:1px solid var(--gold); }
+  .callout.lock{ background:var(--surface-sunken); border:1px solid var(--border); color:var(--ink-soft); }
+
+  .empty{ text-align:center; padding:50px 20px; color:var(--ink-faint); }
+  .empty .ic{ font-size:30px; margin-bottom:10px; }
+
+  table.datatable{ width:100%; border-collapse:collapse; font-size:12.5px; }
+  table.datatable th{ text-align:left; font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-faint); padding:8px 10px; border-bottom:1px solid var(--border); }
+  table.datatable td{ padding:10px; border-bottom:1px solid var(--border); vertical-align:middle; }
+  table.datatable tr:last-child td{ border-bottom:none; }
+  table.datatable tr:hover td{ background:var(--surface-sunken); }
+
+  .meter{ height:7px; border-radius:99px; background:var(--surface-sunken); overflow:hidden; }
+  .meter .fill{ height:100%; border-radius:99px; background:var(--blue); }
+  .meter .fill.warn{ background:var(--gold); }
+  .meter .fill.full{ background:var(--brick); }
+
+  .modal-backdrop{ position:fixed; inset:0; background:rgba(10,16,32,.55); z-index:100; display:flex; align-items:center; justify-content:center; padding:20px; }
+  .modal{ background:var(--surface); border-radius:14px; max-width:520px; width:100%; max-height:85vh; overflow-y:auto; box-shadow:var(--shadow); border:1px solid var(--border); }
+  .modal-head{ padding:18px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+  .modal-head h2{ font-size:17px; margin:0; }
+  .modal-body{ padding:20px; }
+  .modal-foot{ padding:14px 20px; border-top:1px solid var(--border); display:flex; justify-content:flex-end; gap:10px; }
+  .x-close{ border:none; background:none; font-size:18px; cursor:pointer; color:var(--ink-faint); width:28px; height:28px; }
+
+  .toast-stack{ position:fixed; bottom:22px; right:22px; z-index:200; display:flex; flex-direction:column; gap:8px; align-items:flex-end; }
+  .toast{ background:var(--ink); color:var(--bg); padding:11px 16px; border-radius:9px; font-size:12.5px; font-weight:600; box-shadow:var(--shadow); display:flex; align-items:center; gap:8px; animation:toastin .18s ease-out; }
+  @keyframes toastin{ from{ opacity:0; transform:translateY(6px);} to{ opacity:1; transform:none;} }
+  .toast .ic{ color:var(--forest); }
+
+  .kv{ display:flex; justify-content:space-between; gap:10px; padding:7px 0; border-bottom:1px solid var(--border); font-size:12.5px; }
+  .kv:last-child{ border-bottom:none; }
+  .kv .k{ color:var(--ink-faint); }
+  .kv .v{ font-weight:600; text-align:right; }
+
+  .avatar{ width:30px; height:30px; border-radius:50%; background:var(--blue-soft); color:var(--blue); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px; flex-shrink:0; }
+
+  .ranking-bar{ display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+  .ranking-bar .rl{ width:150px; font-size:11.5px; color:var(--ink-soft); flex-shrink:0; }
+  .ranking-bar .rt{ flex:1; }
+  .ranking-bar .rv{ width:60px; text-align:right; font-size:11.5px; font-weight:700; font-variant-numeric:tabular-nums; flex-shrink:0; }
+
+  .redacted{ background:repeating-linear-gradient(135deg, var(--surface-sunken), var(--surface-sunken) 4px, var(--border) 4px, var(--border) 8px); color:transparent; border-radius:4px; user-select:none; }
+
+  .hero-score{ display:flex; align-items:center; gap:16px; padding:16px; background:var(--sky-soft); border-radius:12px; margin-bottom:16px; }
+  .hero-score .ring{ width:64px; height:64px; border-radius:50%; flex-shrink:0; background:conic-gradient(var(--forest) calc(var(--pct,72)*1%), var(--surface-sunken) 0); display:flex; align-items:center; justify-content:center; }
+  .hero-score .ring .inner{ width:50px; height:50px; border-radius:50%; background:var(--surface); display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif; font-weight:700; font-size:16px; }
+
+  .org-tree{ font-size:12.5px; }
+  .org-node{ display:flex; align-items:center; gap:10px; padding:9px 11px; border:1px solid var(--border); border-radius:9px; margin-bottom:6px; background:var(--surface); }
+  .org-node.l2{ margin-left:22px; border-left:3px solid var(--sky); }
+  .org-node.l3{ margin-left:44px; border-left:3px solid var(--gold); }
+  .org-node .role-tag{ font-size:9.5px; font-weight:700; text-transform:uppercase; padding:2px 6px; border-radius:5px; background:var(--surface-sunken); color:var(--ink-faint); }
+
+  @media (max-width:760px){
+    .rail{ position:fixed; left:0; top:0; bottom:0; z-index:80; transform:translateX(-100%); transition:transform .2s; padding-top:70px; }
+    .rail.open{ transform:none; }
+    .topbar .brand span.full{ display:none; }
+    main{ padding:16px 14px 50px; }
+    .grid-4{ grid-template-columns:repeat(2,1fr); }
+    .stat-strip{ gap:26px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+<div id="modalRoot"></div>
+<div class="toast-stack" id="toastStack"></div>
+
+<script>
+/* ================= DATA MODEL ================= */
+
+const ROLES = [
+  {id:'owner', label:'Property Owner', icon:'🏠', desc:'List a disputed property and track its case'},
+  {id:'investor', label:'Buyer / Investor', icon:'🔎', desc:'Browse verified listings and place offers'},
+  {id:'lawyer', label:'Lawyer', icon:'⚖️', desc:'Review title, legal rights and court records'},
+];
+
+const STAFF_ROLES = [
+  {id:'employee', label:'Employee'},
+  {id:'subadmin', label:'Sub Admin'},
+  {id:'superadmin', label:'Super Admin'},
+];
+
+const NAV = {
+  owner: [
+    {id:'dashboard', label:'Dashboard', icon:'▦'},
+    {id:'wizard', label:'List a Property', icon:'＋'},
+    {id:'action', label:'Action Required', icon:'⚑'},
+    {id:'invoices', label:'Invoices & Payments', icon:'₹'},
+  ],
+  investor: [
+    {id:'marketplace', label:'Marketplace', icon:'▦'},
+    {id:'shortlist', label:'Shortlisted', icon:'★'},
+    {id:'eois', label:'My EOIs', icon:'✉'},
+  ],
+  lawyer: [
+    {id:'queue', label:'Assigned Cases', icon:'▦'},
+    {id:'workspace', label:'Verification Workspace', icon:'🗎'},
+  ],
+  employee: [
+    {id:'workload', label:'My Queue', icon:'▦'},
+    {id:'intake', label:'Intake & KYC', icon:'🗎'},
+    {id:'history', label:'Communication History', icon:'✉'},
+  ],
+  subadmin: [
+    {id:'inbox', label:'Incoming Requests', icon:'▦'},
+    {id:'team', label:'My Employees', icon:'☺'},
+    {id:'overdue', label:'SLA Overdue', icon:'⏱'},
+  ],
+  superadmin: [
+    {id:'console', label:'Master Case Console', icon:'▦'},
+    {id:'approval', label:'Approval & Ranking', icon:'✓'},
+    {id:'org', label:'Team & Org', icon:'☺'},
+    {id:'settings', label:'System Settings', icon:'⚙'},
+  ],
+};
+
+const ROLE_LOOKUP = {};
+[...ROLES, ...STAFF_ROLES].forEach(r=>ROLE_LOOKUP[r.id]=r);
+
+const STATUS_META = {
+  Draft:{cls:'draft', label:'Draft'},
+  Submitted:{cls:'submitted', label:'Submitted'},
+  'In Sub Admin Queue':{cls:'queue', label:'In Sub Admin Queue'},
+  Assigned:{cls:'assigned', label:'Assigned to Employee'},
+  'KYC & Details Pending':{cls:'clarification', label:'KYC & Details Pending'},
+  'Clarification Required':{cls:'clarification', label:'Clarification Required'},
+  'Clarification Submitted':{cls:'assigned', label:'Clarification Submitted'},
+  'Under Verification':{cls:'verification', label:'Under Verification'},
+  'Admin Review':{cls:'review', label:'Admin Review'},
+  'Approved and Live':{cls:'approved', label:'Approved & Live'},
+  Rejected:{cls:'rejected', label:'Rejected'},
+  'On Hold':{cls:'clarification', label:'On Hold'},
+  Closed:{cls:'closed', label:'Closed'},
+};
+
+function seedState(){
+  return {
+    screen: 'site',
+    authEmail:'', authOtp:['','','','','',''], pendingRole:null,
+    theProperty: {
+      ref:'NV-PR-20458', caseRef:'NV-CS-20458',
+      title:'2.4 Acre Agricultural Plot, Sonipat Road',
+      subtype:'Co-owner', status:'Draft',
+      location:'Village Rai, Sonipat, Haryana',
+      dispute:'Partition Dispute — Co-owner Claim',
+      contact:'+91 98120 XXXXX',
+      subAdmin:null, employee:null, lawyer:null,
+      kycDone:false,
+      docs:[
+        {name:'Sale Deed / Title Document', required:true, uploaded:false},
+        {name:'Encumbrance Certificate', required:true, uploaded:false},
+        {name:'Mutation Record (Latest)', required:true, uploaded:false},
+        {name:'Government Photo ID (KYC)', required:true, uploaded:false},
+        {name:'Property Tax Receipt', required:false, uploaded:false},
+      ],
+      timeline:[],
+      score:null, fee:4999, promo:'NV-LAUNCH10',
+    },
+    employees:[
+      {name:'Ritika Sharma', region:'North (Haryana/Delhi NCR)', active:2, cap:5, expertise:'Title & Partition Disputes', subAdmin:'Vikram Rao'},
+      {name:'Arjun Verma', region:'North (Haryana/Delhi NCR)', active:5, cap:5, expertise:'Builder/Developer Disputes', subAdmin:'Vikram Rao'},
+      {name:'Meera Iyer', region:'West (Maharashtra/Gujarat)', active:1, cap:5, expertise:'Inheritance Disputes', subAdmin:'Sana Qureshi'},
+    ],
+    subAdmins:[
+      {name:'Vikram Rao', region:'North (Haryana/Delhi NCR)', team:2},
+      {name:'Sana Qureshi', region:'West (Maharashtra/Gujarat)', team:1},
+    ],
+    notifCount:2,
+    notifications:[
+      {t:'New property submitted', d:'NV-CS-20458 landed in Sub Admin queue for review', who:'subadmin'},
+      {t:'Welcome to Nirvivad', d:'Your account is set up. Complete your first action to get started.', who:'owner'},
+    ],
+    marketplace: [
+      {ref:'NV-PR-19882', title:'Commercial Plot, MG Road Frontage', loc:'Indore, Madhya Pradesh', score:81, risk:'Low', category:'Commercial', size:'0.6 Acre'},
+      {ref:'NV-PR-20112', title:'Residential Bungalow, Disputed Inheritance', loc:'Pune, Maharashtra', score:64, risk:'Medium', category:'Residential', size:'4,200 sq.ft'},
+      {ref:'NV-PR-20301', title:'Agricultural Land, Cleared Title Dispute', loc:'Nashik, Maharashtra', score:88, risk:'Low', category:'Agricultural', size:'3.1 Acre'},
+    ],
+    eoiSubmitted:false,
+  };
+}
+
+let state = JSON.parse(JSON.stringify(seedState()));
+try{ const saved = sessionStorage.getItem('nirvivad-proto-state-v2'); if(saved) state = JSON.parse(saved); }catch(e){}
+function persist(){ try{ sessionStorage.setItem('nirvivad-proto-state-v2', JSON.stringify(state)); }catch(e){} }
+
+/* ================= HELPERS ================= */
+
+function el(html){ const d=document.createElement('div'); d.innerHTML=html.trim(); return d.firstElementChild; }
+function statusPill(status){ const m = STATUS_META[status] || {cls:'draft', label:status}; return `<span class="pill ${m.cls}"><span class="dot"></span>${m.label}</span>`; }
+function toast(msg){
+  const stack = document.getElementById('toastStack');
+  const t = el(`<div class="toast"><span class="ic">✓</span><span>${msg}</span></div>`);
+  stack.appendChild(t);
+  setTimeout(()=>{ t.style.opacity='0'; t.style.transition='opacity .25s'; setTimeout(()=>t.remove(),250); }, 3200);
+}
+function indicative(){ return `<span class="tag-indicative" title="Value not yet finalized by client — placeholder for prototype purposes">Indicative</span>`; }
+function openModal(html){ document.getElementById('modalRoot').innerHTML = `<div class="modal-backdrop" onclick="if(event.target===this) closeModal()"><div class="modal">${html}</div></div>`; }
+function closeModal(){ document.getElementById('modalRoot').innerHTML=''; }
+function advanceStatus(to, note){ state.theProperty.status = to; state.theProperty.timeline.push({label:to, note: note||''}); persist(); }
+function goto(screen){ state.screen = screen; persist(); render(); window.scrollTo(0,0); }
+function setView(v){ state.view = v; persist(); render(); }
+
+function switchRole(roleId){
+  state.role = roleId;
+  state.view = NAV[roleId][0].id;
+  persist(); render();
+}
+function resetProto(){ state = JSON.parse(JSON.stringify(seedState())); persist(); render(); toast('Scenario reset to initial state'); }
+
+function toggleNotif(){
+  const p = document.getElementById('notifPanel');
+  if(!p) return;
+  if(p.hidden){
+    p.innerHTML = `<div class="h">Notifications</div>` + state.notifications.map(n=>`<div class="notif-item"><div class="t">${n.t}</div><div class="d">${n.d}</div></div>`).join('');
+    p.hidden = false; state.notifCount = 0;
+    const pip = document.getElementById('notifPip'); if(pip) pip.style.display='none';
+  } else { p.hidden = true; }
+}
+document.addEventListener('click', (e)=>{
+  const p = document.getElementById('notifPanel');
+  if(p && !p.hidden && !p.contains(e.target) && !e.target.closest('.bell')) p.hidden = true;
+});
+
+/* ================= MARKETING SITE ================= */
+
+function viewSite(){
+  return `
+    <header class="site-header">
+      <div class="brand"><span class="mark">N</span>Nirvivad</div>
+      <nav class="site-nav">
+        <a onclick="scrollToId('how')">How it works</a>
+        <a onclick="scrollToId('roles')">Who it's for</a>
+        <a onclick="scrollToId('trust')">Trust &amp; process</a>
+      </nav>
+      <button class="btn" onclick="goto('login')">Log in</button>
+      <button class="btn btn-primary" onclick="goto('login')">Get started</button>
+    </header>
+    <main class="site-main">
+      <section class="hero">
+        <span class="eyebrow">Property Dispute Resolution</span>
+        <h1>Turn disputed property into a verified, investable listing.</h1>
+        <p class="lead">Nirvivad connects property owners facing legal disputes with vetted lawyers, valuers and investors — every case verified before it goes anywhere near a buyer.</p>
+        <div class="cta-row">
+          <button class="btn btn-primary btn-lg" onclick="goto('login')">List your property</button>
+          <button class="btn btn-lg" onclick="goto('login')">Browse verified listings</button>
+        </div>
+      </section>
+      <div class="stat-strip">
+        <div class="s"><div class="n">8</div><div class="l">Verification Factors</div></div>
+        <div class="s"><div class="n">100%</div><div class="l">Identity Protected</div></div>
+        <div class="s"><div class="n">3</div><div class="l">Review Stages</div></div>
+        <div class="s"><div class="n">24×7</div><div class="l">Case Tracking</div></div>
+      </div>
+
+      <section class="site-section" id="how">
+        <div class="head">
+          <span class="eyebrow">How it works</span>
+          <h2>From submission to a verified listing</h2>
+          <p>A short intake gets your case moving — our team handles the rest.</p>
+        </div>
+        <div class="flow-steps">
+          <div class="flow-step"><div class="num">1</div><h3>Submit minimal details</h3><p>Tell us the basics about the property and the dispute. No lengthy forms up front.</p></div>
+          <div class="flow-step"><div class="num">2</div><h3>Our team takes over</h3><p>A Sub Admin routes your case to an Employee, who requests full details, documents and KYC.</p></div>
+          <div class="flow-step"><div class="num">3</div><h3>Independent verification</h3><p>A licensed Lawyer reviews title and legal risk; Super Admin approves the final report.</p></div>
+          <div class="flow-step"><div class="num">4</div><h3>Goes live, anonymised</h3><p>Verified listings reach investors with a transparent risk score — your identity stays hidden.</p></div>
+        </div>
+      </section>
+
+      <section class="site-section" id="roles" style="background:var(--surface); border-top:1px solid var(--border); border-bottom:1px solid var(--border); max-width:none; padding-left:0; padding-right:0;">
+        <div style="max-width:1080px; margin:0 auto; padding:0 24px;">
+          <div class="head">
+            <span class="eyebrow">Who it's for</span>
+            <h2>One platform, every party in the dispute</h2>
+          </div>
+          <div class="role-grid">
+            ${ROLES.map(r=>`<div class="role-card"><div class="ic">${r.icon}</div><h3>${r.label}</h3><p>${r.desc}</p></div>`).join('')}
+            <div class="role-card"><div class="ic">🗂️</div><h3>Nirvivad Team</h3><p>Employees, Sub Admins and Super Admin verify and manage every case internally.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="site-section" id="trust">
+        <div class="head">
+          <span class="eyebrow">Trust &amp; process</span>
+          <h2>Verification before visibility</h2>
+          <p>No property reaches an investor without a documented legal review.</p>
+        </div>
+        <div class="grid grid-3">
+          <div class="card"><h3>Identity protected</h3><p style="color:var(--ink-faint); font-size:12.5px;">Owner identity and contact details are never shown to investors. All engagement is routed through our team.</p></div>
+          <div class="card"><h3>Licensed reviewers</h3><p style="color:var(--ink-faint); font-size:12.5px;">Every case is reviewed by a verified Lawyer before it's eligible for approval.</p></div>
+          <div class="card"><h3>Full audit trail</h3><p style="color:var(--ink-faint); font-size:12.5px;">Every status change, request and document is logged and traceable internally.</p></div>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer">Nirvivad — Property Dispute Resolution Platform · Prototype for internal review, not for production use</footer>
+  `;
+}
+function scrollToId(id){ const e = document.getElementById(id); if(e) e.scrollIntoView({behavior:'smooth'}); }
+
+/* ================= AUTH: EMAIL + OTP + ROLE PICK ================= */
+
+function viewLogin(){
+  return `
+    <div class="auth-wrap">
+      <div class="auth-card">
+        <div class="brand"><span class="mark">N</span>Nirvivad</div>
+        <h1>Log in or sign up</h1>
+        <div class="sub">We'll email you a one-time code — no password needed.</div>
+        <div class="field"><label>Email address</label><input type="email" id="emailInput" placeholder="you@example.com" value="${state.authEmail}"></div>
+        <button class="btn btn-primary btn-block" onclick="requestOtp()">Continue with email</button>
+        <div class="auth-foot">By continuing you agree to Nirvivad's Terms &amp; Privacy Policy.</div>
+      </div>
+    </div>
+  `;
+}
+function requestOtp(){
+  const v = document.getElementById('emailInput').value.trim();
+  state.authEmail = v || 'rakesh.malhotra@example.com';
+  persist();
+  goto('otp');
+  toast('OTP sent to ' + state.authEmail);
+}
+
+function viewOtp(){
+  return `
+    <div class="auth-wrap">
+      <div class="auth-card">
+        <div class="brand"><span class="mark">N</span>Nirvivad</div>
+        <h1>Enter verification code</h1>
+        <div class="sub">6-digit code sent to <strong>${state.authEmail}</strong></div>
+        <div class="otp-row">
+          ${[0,1,2,3,4,5].map(i=>`<input maxlength="1" inputmode="numeric" id="otp${i}" value="${state.authOtp[i]||''}" oninput="otpMove(${i},this)">`).join('')}
+        </div>
+        <button class="btn btn-primary btn-block" onclick="verifyOtp()">Verify &amp; continue</button>
+        <div class="auth-foot">Didn't get a code? <a onclick="requestOtp()">Resend</a></div>
+      </div>
+    </div>
+  `;
+}
+function otpMove(i, node){
+  state.authOtp[i] = node.value.replace(/[^0-9]/g,'').slice(0,1);
+  if(state.authOtp[i] && i<5) document.getElementById('otp'+(i+1)).focus();
+  persist();
+}
+function verifyOtp(){
+  const hasExisting = !!state.role;
+  toast('Email verified');
+  if(hasExisting){ goto('app'); }
+  else { goto('rolepick'); }
+}
+
+function viewRolePick(){
+  return `
+    <div class="auth-wrap">
+      <div class="auth-card" style="max-width:440px;">
+        <div class="brand"><span class="mark">N</span>Nirvivad</div>
+        <h1>How will you use Nirvivad?</h1>
+        <div class="sub">You can activate additional roles from your account later.</div>
+        <div class="role-pick-grid">
+          ${ROLES.map(r=>`
+            <div class="role-pick ${state.pendingRole===r.id?'checked':''}" onclick="pickRole('${r.id}')">
+              <div class="ic">${r.icon}</div><div class="t">${r.label}</div>
+            </div>`).join('')}
+        </div>
+        <button class="btn btn-primary btn-block" style="margin-top:8px;" ${state.pendingRole?'':'disabled'} onclick="confirmRole()">Continue</button>
+        <div class="auth-foot">Nirvivad team member? <a onclick="staffLogin()">Staff sign-in</a></div>
+      </div>
+    </div>
+  `;
+}
+function pickRole(id){ state.pendingRole = id; persist(); render(); }
+function confirmRole(){
+  state.role = state.pendingRole;
+  state.view = NAV[state.role][0].id;
+  persist();
+  goto('app');
+  toast('Welcome to Nirvivad');
+}
+function staffLogin(){
+  state.role = 'employee';
+  state.view = NAV.employee[0].id;
+  persist();
+  goto('app');
+  toast('Signed in as staff — use the role switcher to preview Sub Admin / Super Admin views');
+}
+
+/* ================= APP SHELL ================= */
+
+function renderApp(){
+  const allRoles = [...ROLES, ...STAFF_ROLES];
+  const items = NAV[state.role] || NAV.owner;
+  if(!state.view || !items.find(i=>i.id===state.view)) state.view = items[0].id;
+
+  return `
+    <div class="topbar">
+      <button class="bell" id="railToggle" style="display:none" onclick="document.getElementById('rail').classList.toggle('open')" aria-label="Menu">☰</button>
+      <div class="brand"><span class="mark">N</span><span class="full">Nirvivad</span></div>
+      <div class="topbar-spacer"></div>
+      <div class="badge-verified"><span class="dot"></span><span>Verified</span></div>
+      <div class="role-select-wrap">
+        <select class="role-select" onchange="switchRole(this.value)">
+          ${allRoles.map(r=>`<option value="${r.id}" ${r.id===state.role?'selected':''}>${r.icon||'◆'} ${r.label}</option>`).join('')}
+        </select>
+      </div>
+      <button class="bell" onclick="toggleNotif()" aria-label="Notifications">🔔<span class="pip" id="notifPip" style="display:${state.notifCount>0?'block':'none'}"></span></button>
+      <button class="btn btn-sm" onclick="logout()">Log out</button>
+    </div>
+    <div id="notifPanel" class="notif-panel" hidden></div>
+    <div class="body-row">
+      <nav class="rail" id="rail">
+        <div class="rail-label">${ROLE_LOOKUP[state.role].label}</div>
+        ${items.map(i=>`<button class="nav-item ${i.id===state.view?'active':''}" onclick="setView('${i.id}')"><span class="ic">${i.icon}</span>${i.label}</button>`).join('')}
+        <div style="flex:1"></div>
+        <div class="rail-label">Prototype</div>
+        <button class="nav-item" onclick="resetProto()"><span class="ic">↺</span>Reset scenario</button>
+        <button class="nav-item" onclick="goto('site')"><span class="ic">🌐</span>View website</button>
+      </nav>
+      <main><div class="container" id="main"></div></main>
+    </div>
+  `;
+}
+function logout(){ goto('site'); toast('Logged out'); }
+
+/* ================= VIEWS: OWNER ================= */
+
+function viewOwnerDashboard(){
+  const p = state.theProperty;
+  const started = p.status !== 'Draft';
+  return `
+    <div class="page-head">
+      <div class="eyebrow">Property Owner</div>
+      <h1>Welcome back, Rakesh</h1>
+      <div class="sub">Track your listed property and respond to action items below.</div>
+    </div>
+    ${!started ? `
+      <div class="card" style="text-align:center; padding:36px 20px;">
+        <div style="font-size:30px; margin-bottom:8px;">🏠</div>
+        <h3 style="font-size:16px;">You haven't listed a property yet</h3>
+        <div class="sub" style="color:var(--ink-faint); margin:6px 0 18px;">It only takes a couple of minutes to get your case started.</div>
+        <button class="btn btn-primary" onclick="setView('wizard')">List a Property →</button>
+      </div>
+    ` : `
+    <div class="grid grid-4" style="margin-bottom:20px;">
+      <div class="card stat-tile"><div class="lbl">Active Properties</div><div class="num">1</div><div class="delta up">1 in progress</div></div>
+      <div class="card stat-tile"><div class="lbl">Case Status</div><div style="margin-top:6px">${statusPill(p.status)}</div></div>
+      <div class="card stat-tile"><div class="lbl">Documents Pending</div><div class="num">${p.docs.filter(d=>d.required && !d.uploaded).length}</div><div class="delta warn">${p.kycDone ? 'Action needed' : 'Awaiting request'}</div></div>
+      <div class="card stat-tile"><div class="lbl">Listing Fee</div><div class="num mono">₹${p.fee.toLocaleString('en-IN')}</div><div class="delta ${p.status==='Approved and Live'||p.status==='Closed'?'up':'warn'}">${p.status==='Approved and Live'||p.status==='Closed'?'Paid':'Charged later'}</div></div>
+    </div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>${p.title}</h3>
+        <div style="color:var(--ink-faint); font-size:12px; margin-bottom:10px;" class="mono">${p.ref} · Case ${p.caseRef}</div>
+        <div class="kv"><span class="k">Subtype</span><span class="v">${p.subtype}</span></div>
+        <div class="kv"><span class="k">Location</span><span class="v">${p.location}</span></div>
+        <div class="kv"><span class="k">Dispute category</span><span class="v">${p.dispute}</span></div>
+        <div class="kv"><span class="k">Assigned to</span><span class="v">${p.employee ? 'Your Nirvivad case handler' : '<span style="color:var(--ink-faint)">Being routed internally</span>'}</span></div>
+        <div class="divider"></div>
+        <div class="callout info">ℹ️ Internal review progress and staff identities aren't shown here — you'll see status changes and any action items only.</div>
+      </div>
+      <div class="card">
+        <h3>Case Timeline</h3>
+        <div class="timeline" style="margin-top:14px;">
+          ${p.timeline.map((t,i)=>`
+            <div class="tl-step ${i===p.timeline.length-1?'current':'done'}">
+              <div class="tt">${t.label}</div>
+              <div class="td">${t.note||''}</div>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>
+    `}
+  `;
+}
+
+function viewOwnerWizard(){
+  const p = state.theProperty;
+  if(p.status !== 'Draft'){
+    return `
+      <div class="page-head"><div class="eyebrow">Property Owner</div><h1>List a Property</h1></div>
+      <div class="card empty"><div class="ic">✅</div><h3>Already submitted</h3><div class="sub">Case ${p.caseRef} is being processed. Check your dashboard for status.</div></div>
+    `;
+  }
+  return `
+    <div class="page-head">
+      <div class="eyebrow">Property Owner</div>
+      <h1>List a Property</h1>
+      <div class="sub">Just the basics for now — our team will reach out for full details and documents.</div>
+    </div>
+    <div class="card">
+      <div class="field">
+        <label>What is your relationship to this property?</label>
+        <select id="q_subtype">
+          <option>Co-owner</option><option>Possession Holder</option><option>Power of Attorney Holder</option><option>Opposite Party</option><option>Builder / Developer</option><option>Other</option>
+        </select>
+      </div>
+      <div class="grid grid-2">
+        <div class="field"><label>Property title / short description</label><input type="text" id="q_title" placeholder="e.g. 2.4 Acre Agricultural Plot, Sonipat Road" value="${p.title}"></div>
+        <div class="field"><label>Property category</label><select id="q_cat"><option>Agricultural</option><option>Residential</option><option>Commercial</option><option>Industrial</option></select></div>
+      </div>
+      <div class="field"><label>City / State</label><input type="text" id="q_loc" placeholder="e.g. Sonipat, Haryana" value="${p.location}"></div>
+      <div class="field"><label>Dispute type</label>
+        <select id="q_dispute"><option>Partition Dispute — Co-owner Claim</option><option>Title Dispute</option><option>Inheritance Dispute</option><option>Boundary Dispute</option></select>
+      </div>
+      <div class="field"><label>Your contact number</label><input type="text" id="q_phone" placeholder="+91 98XXX XXXXX" value="${p.contact}"></div>
+      <div class="callout info" style="margin-top:6px;">This is a quick intake only. Once submitted, our Sub Admin routes your case to a case handler, who will request full property details, supporting documents and KYC as next steps.</div>
+      <button class="btn btn-primary btn-block" style="margin-top:16px;" onclick="submitMinimalIntake()">Submit</button>
+    </div>
+  `;
+}
+function submitMinimalIntake(){
+  const p = state.theProperty;
+  p.title = document.getElementById('q_title').value || p.title;
+  p.subtype = document.getElementById('q_subtype').value;
+  p.location = document.getElementById('q_loc').value || p.location;
+  p.dispute = document.getElementById('q_dispute').value;
+  p.contact = document.getElementById('q_phone').value || p.contact;
+  advanceStatus('In Sub Admin Queue', 'Minimal intake submitted — routed to Sub Admin for assignment');
+  state.view = 'dashboard';
+  persist();
+  toast('Property submitted — our team will be in touch');
+  render();
+}
+
+function viewOwnerAction(){
+  const p = state.theProperty;
+  const needsKyc = p.status === 'KYC & Details Pending';
+  const needsDoc = p.status === 'Clarification Required';
+  return `
+    <div class="page-head">
+      <div class="eyebrow">Property Owner</div>
+      <h1>Action Required</h1>
+      <div class="sub">Items that need your response to keep your case moving.</div>
+    </div>
+    ${needsKyc ? `
+      <div class="card" style="border-color:var(--gold); margin-bottom:14px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
+          <div><h3>Complete property details &amp; KYC</h3><div class="sub" style="color:var(--ink-faint); font-size:12.5px; margin-top:4px;">Requested by your case handler · Case ${p.caseRef}</div></div>
+          ${statusPill(p.status)}
+        </div>
+        <div class="divider"></div>
+        <div class="grid grid-2">
+          <div class="field"><label>Survey / Khasra number</label><input type="text" id="k_survey" placeholder="e.g. 312/2"></div>
+          <div class="field"><label>Registration ID</label><input type="text" id="k_reg" placeholder="e.g. HR-SNP-2019-04471"></div>
+        </div>
+        <div class="field"><label>Chronology of the dispute</label><textarea id="k_chrono" placeholder="Briefly describe how the dispute arose and its current state">Property inherited jointly by three siblings in 2019. Partition by mutual consent attempted in 2022 but disputed by one co-owner over unequal share valuation.</textarea></div>
+        <h3 style="margin-top:14px;">Documents &amp; KYC</h3>
+        ${p.docs.map((d,i)=>`
+          <div class="upload-slot ${d.uploaded?'uploaded':''}">
+            <div><span class="ut">${d.name}</span>${d.required?'<span class="req">Required</span>':'<span class="opt">Optional</span>'}</div>
+            <button class="btn btn-sm" onclick="toggleDoc(${i})">${d.uploaded?'✓ Uploaded':'Upload'}</button>
+          </div>`).join('')}
+        <button class="btn btn-primary btn-block" style="margin-top:10px;" onclick="submitKyc()">Submit Details &amp; KYC</button>
+      </div>
+    ` : ''}
+    ${needsDoc ? `
+      <div class="card" style="border-color:var(--gold);">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
+          <div><h3>Missing document: Mutation Record (Latest)</h3><div class="sub" style="color:var(--ink-faint); font-size:12.5px; margin-top:4px;">Requested by your case handler · Case ${p.caseRef}</div></div>
+          ${statusPill(p.status)}
+        </div>
+        <div class="divider"></div>
+        <div class="upload-slot"><div><span class="ut">Mutation Record (Latest)</span><span class="req">Required</span></div><button class="btn btn-sm btn-primary" onclick="submitClarification()">Upload File</button></div>
+      </div>
+    ` : ''}
+    ${!needsKyc && !needsDoc ? `
+      <div class="card empty"><div class="ic">✅</div><h3>No pending actions</h3><div class="sub">You'll be notified here whenever your case handler requests details or documents.</div></div>
+    ` : ''}
+  `;
+}
+function toggleDoc(i){ state.theProperty.docs[i].uploaded = !state.theProperty.docs[i].uploaded; persist(); render(); }
+function submitKyc(){
+  const p = state.theProperty;
+  p.docs.forEach(d=>d.uploaded=true);
+  p.kycDone = true;
+  advanceStatus('Under Verification', 'Owner submitted full details, documents & KYC — case handler routed file to Lawyer');
+  state.theProperty.lawyer = 'Priya Nair';
+  persist(); toast('Details & KYC submitted — Lawyer assigned'); render();
+}
+function submitClarification(){
+  state.theProperty.docs.find(d=>d.name==='Mutation Record (Latest)').uploaded = true;
+  advanceStatus('Clarification Submitted', 'Owner uploaded Mutation Record — pending re-verification');
+  persist(); toast('Document uploaded'); render();
+}
+
+function viewOwnerInvoices(){
+  const p = state.theProperty;
+  const paid = p.status === 'Approved and Live' || p.status === 'Closed';
+  return `
+    <div class="page-head"><div class="eyebrow">Property Owner</div><h1>Invoices &amp; Payments</h1><div class="sub">The non-refundable listing fee is charged once your property is approved.</div></div>
+    <div class="card">
+      ${paid ? `
+        <table class="datatable">
+          <thead><tr><th>Invoice</th><th>Property</th><th>Amount</th><th>Status</th><th></th></tr></thead>
+          <tbody><tr>
+            <td class="mono">INV-88213</td><td>${p.ref}</td><td class="mono">₹${p.fee.toLocaleString('en-IN')}</td>
+            <td><span class="pill approved"><span class="dot"></span>Paid</span></td>
+            <td><button class="btn btn-sm" onclick="toast('Invoice download is illustrative in this prototype')">Download</button></td>
+          </tr></tbody>
+        </table>
+      ` : `<div class="empty"><div class="ic">₹</div><h3>No invoices yet</h3><div class="sub">The listing fee (₹${p.fee.toLocaleString('en-IN')} ${indicative()}) is charged once your property clears verification and is approved.</div></div>`}
+    </div>
+  `;
+}
+
+/* ================= VIEWS: INVESTOR ================= */
+
+function viewInvestorMarketplace(){
+  const items = state.marketplace;
+  return `
+    <div class="page-head"><div class="eyebrow">Buyer / Investor</div><h1>Investor Marketplace</h1><div class="sub">Browse verified listings. Property Owner identity and contact details are always hidden.</div></div>
+    <div class="card" style="margin-bottom:16px; display:flex; gap:10px; flex-wrap:wrap;">
+      <select style="flex:1; min-width:140px;"><option>All categories</option><option>Agricultural</option><option>Residential</option><option>Commercial</option></select>
+      <select style="flex:1; min-width:140px;"><option>All risk levels</option><option>Low risk</option><option>Medium risk</option></select>
+      <select style="flex:1; min-width:140px;"><option>Sort: Ranking score ↓</option><option>Sort: Newest</option></select>
+    </div>
+    <div class="grid grid-3">
+      ${items.map(it=>`
+        <div class="card" style="cursor:pointer;" onclick="openPropertyDetail('${it.ref}')">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+            <span class="pill ${it.risk==='Low'?'approved':'clarification'}"><span class="dot"></span>${it.risk} Risk</span>
+            <span class="mono" style="font-size:11px; color:var(--ink-faint);">${it.ref}</span>
+          </div>
+          <h3>${it.title}</h3>
+          <div style="font-size:12px; color:var(--ink-faint); margin:4px 0 10px;">${it.loc} · ${it.size}</div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div class="meter" style="flex:1;"><div class="fill" style="width:${it.score}%"></div></div>
+            <span class="mono" style="font-weight:700; font-size:12.5px;">${it.score}</span>
+          </div>
+          <div style="font-size:10.5px; color:var(--ink-faint); margin-top:4px;">8-Factor Ranking Score</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+function openPropertyDetail(ref){
+  const it = state.marketplace.find(m=>m.ref===ref) || {ref, title:state.theProperty.title, loc:state.theProperty.location, size:'2.4 Acre', score:76, risk:'Low'};
+  openModal(`
+    <div class="modal-head"><h2>${it.title}</h2><button class="x-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="hero-score" style="--pct:${it.score}"><div class="ring"><div class="inner">${it.score}</div></div>
+        <div><div style="font-weight:700; font-size:14px;">8-Factor Ranking Score</div><div style="font-size:12px; color:var(--ink-faint);">Calculated on approval · weights ${indicative()}</div></div>
+      </div>
+      <div class="ranking-bar"><span class="rl">Legal Verification (25%)</span><div class="rt meter"><div class="fill" style="width:88%"></div></div><span class="rv">88</span></div>
+      <div class="ranking-bar"><span class="rl">Dispute / Title Risk (20%)</span><div class="rt meter"><div class="fill" style="width:70%"></div></div><span class="rv">70</span></div>
+      <div class="ranking-bar"><span class="rl">Location Potential (15%)</span><div class="rt meter"><div class="fill" style="width:80%"></div></div><span class="rv">80</span></div>
+      <div class="ranking-bar"><span class="rl">Valuation Attractiveness (15%)</span><div class="rt meter"><div class="fill" style="width:65%"></div></div><span class="rv">65</span></div>
+      <div class="ranking-bar"><span class="rl">Document Completeness (10%)</span><div class="rt meter"><div class="fill" style="width:90%"></div></div><span class="rv">90</span></div>
+      <div class="ranking-bar"><span class="rl">Freshness (5%)</span><div class="rt meter"><div class="fill" style="width:95%"></div></div><span class="rv">95</span></div>
+      <div class="ranking-bar"><span class="rl">Investor Engagement (5%)</span><div class="rt meter"><div class="fill" style="width:40%"></div></div><span class="rv">40</span></div>
+      <div class="ranking-bar"><span class="rl">Admin Priority (5%)</span><div class="rt meter"><div class="fill" style="width:60%"></div></div><span class="rv">60</span></div>
+      <div class="divider"></div>
+      <div class="kv"><span class="k">Location</span><span class="v">${it.loc}</span></div>
+      <div class="kv"><span class="k">Size</span><span class="v">${it.size||'—'}</span></div>
+      <div class="kv"><span class="k">Owner identity</span><span class="v redacted">Rakesh Kumar Malhotra</span></div>
+      <div class="kv"><span class="k">Owner contact</span><span class="v redacted">+91 98XXXXXX12</span></div>
+      <div class="callout lock" style="margin-top:12px;">🔒 Owner identity and contact are permanently hidden. All engagement is routed through the Nirvivad team.</div>
+    </div>
+    <div class="modal-foot"><button class="btn" onclick="closeModal()">Close</button><button class="btn btn-accent" onclick="closeModal(); openEoiModal('${it.ref}')">Submit EOI</button></div>
+  `);
+}
+function openEoiModal(ref){
+  openModal(`
+    <div class="modal-head"><h2>Expression of Interest</h2><button class="x-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="callout info" style="margin-bottom:14px;">Submitted to the Nirvivad team, who coordinate directly with the case handler. You will not contact the Property Owner directly.</div>
+      <div class="field"><label>Indicative offer amount (₹)</label><input type="text" value="42,50,000"></div>
+      <div class="field"><label>Proposed timeline</label><select><option>Ready to proceed within 30 days</option><option>60–90 days</option><option>Flexible</option></select></div>
+      <div class="field"><label>Message to the team</label><textarea>Interested in this property pending confirmation of clear title. Please share updated legal verification status.</textarea></div>
+    </div>
+    <div class="modal-foot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="submitEoi('${ref}')">Submit EOI</button></div>
+  `);
+}
+function submitEoi(ref){ state.eoiSubmitted = true; state.eoiRef = ref; persist(); closeModal(); toast('EOI logged — Nirvivad team alerted'); }
+
+function viewInvestorShortlist(){
+  return `
+    <div class="page-head"><div class="eyebrow">Buyer / Investor</div><h1>Shortlisted</h1><div class="sub">Properties you're tracking.</div></div>
+    <div class="grid grid-3">
+      ${state.marketplace.slice(0,2).map(it=>`
+        <div class="card" style="cursor:pointer;" onclick="openPropertyDetail('${it.ref}')">
+          <h3>${it.title}</h3><div style="font-size:12px; color:var(--ink-faint); margin:4px 0;">${it.loc}</div>
+          <span class="pill approved"><span class="dot"></span>Score ${it.score}</span>
+        </div>`).join('')}
+    </div>
+  `;
+}
+function viewInvestorEois(){
+  return `
+    <div class="page-head"><div class="eyebrow">Buyer / Investor</div><h1>My Expressions of Interest</h1><div class="sub">Track offers you've routed through the Nirvivad team.</div></div>
+    ${state.eoiSubmitted ? `
+      <div class="card"><table class="datatable">
+        <thead><tr><th>Property</th><th>Offer</th><th>Status</th><th>Routed via</th></tr></thead>
+        <tbody><tr><td class="mono">${state.eoiRef}</td><td class="mono">₹42,50,000</td><td><span class="pill review"><span class="dot"></span>With Team</span></td><td>Nirvivad Team</td></tr></tbody>
+      </table></div>
+    ` : `<div class="card empty"><div class="ic">✉️</div><h3>No EOIs submitted yet</h3><div class="sub">Browse the marketplace to submit your first expression of interest.</div></div>`}
+  `;
+}
+
+/* ================= VIEWS: LAWYER ================= */
+
+function viewLawyerQueue(){
+  const p = state.theProperty;
+  const assigned = p.status === 'Under Verification' || p.status === 'Admin Review' || p.status === 'Approved and Live' || p.status === 'Closed';
+  return `
+    <div class="page-head"><div class="eyebrow">Lawyer</div><h1>Assigned Cases</h1><div class="sub">Cases routed to you for title, legal rights and court-record verification.</div></div>
+    ${assigned ? `
+      <div class="case-row" onclick="setView('workspace')">
+        <div class="ref mono">${p.caseRef}</div>
+        <div class="info"><div class="t">${p.title}</div><div class="m">${p.dispute} · SLA: 3 days remaining</div></div>
+        <div class="side">${statusPill(p.status==='Under Verification'?'Under Verification':p.status)}<button class="btn btn-sm btn-primary" onclick="event.stopPropagation(); setView('workspace')">Open →</button></div>
+      </div>
+    ` : `<div class="card empty"><div class="ic">⚖️</div><h3>No cases assigned yet</h3><div class="sub">Cases appear here once a case handler routes them to you for legal due diligence.</div></div>`}
+  `;
+}
+function viewLawyerWorkspace(){
+  const p = state.theProperty;
+  if(p.status !== 'Under Verification'){
+    return `<div class="page-head"><div class="eyebrow">Lawyer</div><h1>Verification Workspace</h1></div>
+      <div class="card empty"><div class="ic">🗎</div><h3>No active case in verification</h3><div class="sub">Open a case from your Assigned Cases queue.</div></div>`;
+  }
+  return `
+    <div class="page-head"><div class="eyebrow">Lawyer</div><h1>Legal Verification Workspace</h1><div class="sub mono">${p.caseRef} · ${p.title}</div></div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Documents</h3>
+        <div style="margin-top:10px;">${p.docs.filter(d=>d.uploaded).map(d=>`<div class="upload-slot uploaded"><span class="ut">${d.name}</span><button class="btn btn-sm" onclick="toast('Preview illustrative in prototype')">View</button></div>`).join('')}</div>
+        <div class="callout info" style="margin-top:10px;">Full property details and KYC submitted by Owner are attached to this case file.</div>
+      </div>
+      <div class="card">
+        <h3>Submit Legal Report</h3>
+        <div class="field" style="margin-top:12px;"><label>Title verification outcome</label><select><option>Clear — no encumbrance found</option><option>Minor issues — resolvable</option><option>Major title defect</option></select></div>
+        <div class="field"><label>Legal risk rating</label><select><option>Low</option><option>Medium</option><option>High</option></select></div>
+        <div class="field"><label>Findings summary</label><textarea>Title traced through registered sale deed (2019) with clean chain of ownership. Partition dispute among co-heirs is civil in nature, unfiled in court. No encumbrance registered.</textarea></div>
+        <button class="btn btn-primary btn-block" onclick="submitLegalReport()">Submit Report to Super Admin</button>
+      </div>
+    </div>
+  `;
+}
+function submitLegalReport(){
+  advanceStatus('Admin Review', 'Lawyer submitted legal verification report — title clear, risk rated Low — routed to Super Admin');
+  persist(); toast('Legal report submitted — case routed to Super Admin'); setView('queue');
+}
+
+/* ================= VIEWS: EMPLOYEE ================= */
+
+function viewEmployeeWorkload(){
+  const p = state.theProperty;
+  const mine = p.employee === 'Ritika Sharma';
+  const me = state.employees[0];
+  return `
+    <div class="page-head"><div class="eyebrow">Employee</div><h1>My Queue</h1><div class="sub">Ritika Sharma · North (Haryana / Delhi NCR) · reports to Vikram Rao (Sub Admin)</div></div>
+    <div class="card" style="margin-bottom:16px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;"><h3>Active Case Capacity</h3><span class="mono" style="font-weight:700;">${me.active}/${me.cap} cases ${indicative()}</span></div>
+      <div class="meter"><div class="fill ${me.active>=me.cap?'full':me.active>=4?'warn':''}" style="width:${(me.active/me.cap)*100}%"></div></div>
+    </div>
+    ${mine ? `
+      <div class="case-row" onclick="setView('intake')">
+        <div class="ref mono">${p.caseRef}</div>
+        <div class="info"><div class="t">${p.title}</div><div class="m">${p.subtype} · ${p.location}</div></div>
+        <div class="side">${statusPill(p.status)}<button class="btn btn-sm btn-primary" onclick="event.stopPropagation(); setView('intake')">Open →</button></div>
+      </div>
+    ` : `<div class="card empty"><div class="ic">🗂️</div><h3>No cases assigned</h3><div class="sub">Cases appear here once your Sub Admin assigns them to you.</div></div>`}
+  `;
+}
+function viewEmployeeIntake(){
+  const p = state.theProperty;
+  const canRequestKyc = p.status === 'Assigned';
+  return `
+    <div class="page-head"><div class="eyebrow">Employee</div><h1>Intake &amp; KYC</h1><div class="sub mono">${p.caseRef} · ${p.title}</div></div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Owner-Submitted Basics</h3>
+        <div class="kv"><span class="k">Owner name</span><span class="v">Rakesh Kumar Malhotra</span></div>
+        <div class="kv"><span class="k">Contact</span><span class="v">${p.contact}</span></div>
+        <div class="kv"><span class="k">Subtype</span><span class="v">${p.subtype}</span></div>
+        <div class="kv"><span class="k">Dispute</span><span class="v">${p.dispute}</span></div>
+        <div class="kv"><span class="k">Location</span><span class="v">${p.location}</span></div>
+        <div class="divider"></div>
+        <h3>Full Details &amp; Documents</h3>
+        ${p.kycDone ? p.docs.map(d=>`<div class="upload-slot uploaded"><span class="ut">${d.name}</span><span style="font-size:11px; color:var(--forest); font-weight:700;">Received</span></div>`).join('')
+          : `<div class="callout warn">Full property details, documents and KYC have not been submitted by the Owner yet.</div>`}
+      </div>
+      <div class="card">
+        <h3>Case Actions</h3>
+        <div class="sub" style="color:var(--ink-faint); font-size:12px; margin:4px 0 14px;">Current status: ${statusPill(p.status)}</div>
+        ${canRequestKyc ? `<div class="callout info" style="margin-bottom:12px;">This case only has minimal intake so far. Request full property details and KYC from the Owner to proceed.</div>
+          <button class="btn btn-accent btn-block" onclick="requestKyc()">Request Full Details &amp; KYC</button>` : ''}
+        ${p.status==='KYC & Details Pending' ? `<div class="callout warn">Waiting on Owner to submit full details, documents and KYC.</div>` : ''}
+        ${p.status==='Clarification Required' ? `<div class="callout warn">Waiting on Owner to upload the requested document.</div>` : ''}
+        ${p.status==='Clarification Submitted' ? `<button class="btn btn-primary btn-block" onclick="routeToLawyer()">Route Case File to Lawyer</button>` : ''}
+        ${p.status==='Under Verification' ? `<div class="callout info">Case is with Lawyer for verification. You'll be notified when the report is submitted.</div>` : ''}
+        ${p.status==='Admin Review' ? `<div class="callout info">Legal report submitted — case is now with Super Admin for final decision.</div>` : ''}
+        ${p.status==='Approved and Live' ? `<div class="callout info" style="border-color:var(--forest); background:var(--forest-soft);">✅ Approved and live on the marketplace.</div>` : ''}
+      </div>
+    </div>
+  `;
+}
+function requestKyc(){
+  advanceStatus('KYC & Details Pending', 'Employee requested full property details, documents & KYC from Owner');
+  persist(); toast('Request sent to Owner'); render();
+}
+function routeToLawyer(){
+  advanceStatus('Under Verification', 'Employee reviewed submission and routed case file to Lawyer (Priya Nair)');
+  persist(); toast('Case routed to Lawyer'); render();
+}
+function viewEmployeeHistory(){
+  const p = state.theProperty;
+  return `
+    <div class="page-head"><div class="eyebrow">Employee</div><h1>Communication &amp; Action History</h1><div class="sub mono">${p.caseRef}</div></div>
+    <div class="card"><div class="timeline" style="margin-top:6px;">
+      ${p.timeline.length ? p.timeline.map(t=>`<div class="tl-step done"><div class="tt">${t.label}</div><div class="td">${t.note||'—'}</div></div>`).join('') : '<div class="empty"><div class="ic">✉️</div>No activity yet</div>'}
+    </div></div>
+  `;
+}
+
+/* ================= VIEWS: SUB ADMIN ================= */
+
+function viewSubAdminInbox(){
+  const p = state.theProperty;
+  const incoming = p.status === 'In Sub Admin Queue';
+  return `
+    <div class="page-head"><div class="eyebrow">Sub Admin</div><h1>Incoming Requests</h1><div class="sub">Vikram Rao · North (Haryana / Delhi NCR) — every new property and verification request lands here first.</div></div>
+    ${incoming ? `
+      <div class="case-row" style="cursor:default;">
+        <div class="ref mono">${p.caseRef}</div>
+        <div class="info"><div class="t">${p.title}</div><div class="m">New property submission · ${p.subtype} · ${p.location}</div></div>
+        <div class="side">${statusPill(p.status)}<button class="btn btn-sm btn-primary" onclick="openAssignModal()">Assign →</button></div>
+      </div>
+    ` : `<div class="card empty"><div class="ic">📥</div><h3>Inbox clear</h3><div class="sub">New property submissions and role verification requests will appear here for you to route to an Employee.</div></div>`}
+  `;
+}
+function openAssignModal(){
+  const options = state.employees.filter(e=>e.subAdmin==='Vikram Rao');
+  openModal(`
+    <div class="modal-head"><h2>Assign Case</h2><button class="x-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="callout info" style="margin-bottom:14px;">Case ${state.theProperty.caseRef} will be assigned to the Employee you select below.</div>
+      <div class="field"><label>Assign to</label>
+        <select id="assignEmpSelect">
+          ${options.map(e=>`<option ${e.active>=e.cap?'disabled':''}>${e.name} — ${e.expertise} (${e.active}/${e.cap} active)${e.active>=e.cap?' · At capacity':''}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="assignToEmployee()">Confirm Assignment</button></div>
+  `);
+}
+function assignToEmployee(){
+  const sel = document.getElementById('assignEmpSelect').value;
+  const emp = state.employees.find(e=>sel.startsWith(e.name));
+  advanceStatus('Assigned', `Sub Admin Vikram Rao assigned case to ${emp.name}`);
+  state.theProperty.employee = emp.name;
+  state.theProperty.subAdmin = 'Vikram Rao';
+  emp.active += 1;
+  persist(); closeModal(); toast(`Case assigned to ${emp.name}`);
+  render();
+}
+function viewSubAdminTeam(){
+  const mine = state.employees.filter(e=>e.subAdmin==='Vikram Rao');
+  return `
+    <div class="page-head"><div class="eyebrow">Sub Admin</div><h1>My Employees</h1><div class="sub">Team capacity in your region.</div></div>
+    <div class="grid grid-3">
+      ${mine.map(e=>`
+        <div class="card">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;"><div class="avatar">${e.name.split(' ').map(n=>n[0]).join('')}</div><div><h3>${e.name}</h3><div style="font-size:11.5px; color:var(--ink-faint);">${e.expertise}</div></div></div>
+          <div class="meter"><div class="fill ${e.active>=e.cap?'full':e.active>=4?'warn':''}" style="width:${(e.active/e.cap)*100}%"></div></div>
+          <div style="font-size:11.5px; color:var(--ink-faint); margin-top:6px;" class="mono">${e.active}/${e.cap} active cases</div>
+        </div>`).join('')}
+    </div>
+  `;
+}
+function viewSubAdminOverdue(){
+  return `
+    <div class="page-head"><div class="eyebrow">Sub Admin</div><h1>SLA Overdue Tracker</h1><div class="sub">Cases exceeding response-time thresholds ${indicative()}.</div></div>
+    <div class="card empty"><div class="ic">⏱</div><h3>Nothing overdue</h3><div class="sub">All active cases in your region are within SLA.</div></div>
+  `;
+}
+
+/* ================= VIEWS: SUPER ADMIN ================= */
+
+function viewAdminConsole(){
+  const p = state.theProperty;
+  return `
+    <div class="page-head"><div class="eyebrow">Super Admin</div><h1>Master Case Management Console</h1><div class="sub">Full visibility and override authority across every active case.</div></div>
+    <div class="grid grid-4" style="margin-bottom:18px;">
+      <div class="card stat-tile"><div class="lbl">Total Active Cases</div><div class="num">1</div></div>
+      <div class="card stat-tile"><div class="lbl">Pending Admin Review</div><div class="num">${p.status==='Admin Review'?1:0}</div></div>
+      <div class="card stat-tile"><div class="lbl">In Sub Admin Queue</div><div class="num">${p.status==='In Sub Admin Queue'?1:0}</div></div>
+      <div class="card stat-tile"><div class="lbl">Live Listings</div><div class="num">${p.status==='Approved and Live'||p.status==='Closed'?1:0}</div></div>
+    </div>
+    <div class="card">
+      <table class="datatable">
+        <thead><tr><th>Case</th><th>Owner</th><th>Sub Admin</th><th>Employee</th><th>Status</th><th></th></tr></thead>
+        <tbody><tr>
+          <td class="mono">${p.caseRef}</td><td>Rakesh Kumar Malhotra</td><td>${p.subAdmin||'—'}</td><td>${p.employee||'—'}</td>
+          <td>${statusPill(p.status)}</td><td><button class="btn btn-sm" onclick="setView('approval')">Review →</button></td>
+        </tr></tbody>
+      </table>
+    </div>
+  `;
+}
+function viewAdminApproval(){
+  const p = state.theProperty;
+  if(p.status !== 'Admin Review' && p.status !== 'Approved and Live' && p.status !== 'Closed'){
+    return `<div class="page-head"><div class="eyebrow">Super Admin</div><h1>Approval &amp; Ranking</h1></div>
+      <div class="card empty"><div class="ic">✓</div><h3>Nothing pending review</h3><div class="sub">Cases appear here once a Lawyer submits their verification report.</div></div>`;
+  }
+  if(p.status === 'Admin Review'){
+    return `
+      <div class="page-head"><div class="eyebrow">Super Admin</div><h1>Property Approval &amp; Ranking</h1><div class="sub mono">${p.caseRef} · ${p.title}</div></div>
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>Consolidated Report</h3>
+          <div class="kv"><span class="k">Legal verification</span><span class="v" style="color:var(--forest)">Clear — Low risk</span></div>
+          <div class="kv"><span class="k">Lawyer</span><span class="v">${p.lawyer}</span></div>
+          <div class="kv"><span class="k">Documents</span><span class="v">${p.docs.filter(d=>d.uploaded).length}/${p.docs.length} received</span></div>
+          <div class="kv"><span class="k">Listing fee (charged on approval)</span><span class="v mono">₹${p.fee.toLocaleString('en-IN')} ${indicative()}</span></div>
+          <div class="divider"></div>
+          <div class="callout warn">Ranking weights shown are indicative pending final client sign-off ${indicative()}.</div>
+        </div>
+        <div class="card">
+          <h3>Decision</h3>
+          <div class="field" style="margin-top:10px;"><label>Manual rank adjustment (optional)</label><input type="number" placeholder="e.g. +5"></div>
+          <div class="field"><label>Reason (required if overriding)</label><input type="text" placeholder="e.g. High investor demand in region"></div>
+          <div style="display:flex; gap:10px; margin-top:16px;">
+            <button class="btn btn-danger" style="flex:1;" onclick="rejectCase()">Reject</button>
+            <button class="btn btn-accent" style="flex:1;" onclick="approveCase()">Approve &amp; Publish</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+  const score = 76;
+  return `
+    <div class="page-head"><div class="eyebrow">Super Admin</div><h1>Property Approval &amp; Ranking</h1><div class="sub mono">${p.caseRef} · ${p.title}</div></div>
+    <div class="card">
+      <div class="hero-score" style="--pct:${score}"><div class="ring"><div class="inner">${score}</div></div><div><div style="font-weight:700;">Published Ranking Score</div><div style="font-size:12px; color:var(--ink-faint);">Live on Investor Marketplace</div></div></div>
+      <div class="kv"><span class="k">Status</span><span class="v">${statusPill(p.status)}</span></div>
+      <div class="kv"><span class="k">Listing fee charged</span><span class="v mono">₹${p.fee.toLocaleString('en-IN')}</span></div>
+      ${p.status==='Approved and Live' ? `<button class="btn btn-primary btn-block" style="margin-top:14px;" onclick="closeCase()">Mark Transaction Closed</button>` : `<div class="callout info" style="margin-top:14px;">Case closed. Employee capacity has been freed.</div>`}
+    </div>
+  `;
+}
+function approveCase(){
+  advanceStatus('Approved and Live', `8-Factor Ranking Score calculated (76/100) — listing fee ₹${state.theProperty.fee.toLocaleString('en-IN')} charged — published to Investor Marketplace, anonymised`);
+  const mp = state.marketplace;
+  if(!mp.find(m=>m.ref===state.theProperty.ref)) mp.unshift({ref:state.theProperty.ref, title:state.theProperty.title, loc:state.theProperty.location, score:76, risk:'Low', size:'2.4 Acre'});
+  persist(); toast('Property approved and published to marketplace'); render();
+}
+function rejectCase(){ advanceStatus('Rejected', 'Rejected by Super Admin'); persist(); toast('Case rejected'); render(); }
+function closeCase(){
+  advanceStatus('Closed', 'Transaction completed — case archived, Employee capacity released');
+  const emp = state.employees.find(e=>e.name===state.theProperty.employee);
+  if(emp) emp.active = Math.max(0, emp.active - 1);
+  persist(); toast('Case closed — Employee capacity freed'); render();
+}
+
+function viewAdminOrg(){
+  return `
+    <div class="page-head"><div class="eyebrow">Super Admin</div><h1>Team &amp; Org</h1><div class="sub">Create Sub Admins and Employees, and manage reporting lines.</div></div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Organization Tree</h3>
+        <div class="org-tree" style="margin-top:12px;">
+          <div class="org-node"><span class="role-tag">Super Admin</span><strong>You</strong></div>
+          ${state.subAdmins.map(sa=>`
+            <div class="org-node l2"><span class="role-tag">Sub Admin</span><strong>${sa.name}</strong><span style="color:var(--ink-faint); font-size:11.5px;">· ${sa.region}</span></div>
+            ${state.employees.filter(e=>e.subAdmin===sa.name).map(e=>`
+              <div class="org-node l3"><span class="role-tag">Employee</span><strong>${e.name}</strong><span style="color:var(--ink-faint); font-size:11.5px;">· ${e.active}/${e.cap} active</span></div>
+            `).join('')}
+          `).join('')}
+        </div>
+      </div>
+      <div class="card">
+        <h3>Add Team Member</h3>
+        <div class="field" style="margin-top:12px;"><label>Role</label><select id="newRole"><option>Sub Admin</option><option>Employee</option></select></div>
+        <div class="field"><label>Full name</label><input type="text" id="newName" placeholder="e.g. Anjali Desai"></div>
+        <div class="field"><label>Region</label><input type="text" id="newRegion" placeholder="e.g. South (Karnataka/Tamil Nadu)"></div>
+        <div class="field"><label>Reports to (if Employee)</label>
+          <select id="newParent">${state.subAdmins.map(sa=>`<option>${sa.name}</option>`).join('')}</select>
+        </div>
+        <button class="btn btn-primary btn-block" onclick="addTeamMember()">Create Account</button>
+      </div>
+    </div>
+  `;
+}
+function addTeamMember(){
+  const role = document.getElementById('newRole').value;
+  const name = document.getElementById('newName').value.trim();
+  const region = document.getElementById('newRegion').value.trim() || 'Unassigned region';
+  if(!name){ toast('Enter a name first'); return; }
+  if(role==='Sub Admin'){
+    state.subAdmins.push({name, region, team:0});
+  } else {
+    const parent = document.getElementById('newParent').value;
+    state.employees.push({name, region, active:0, cap:5, expertise:'General', subAdmin:parent});
+  }
+  persist(); toast(`${role} account created for ${name}`); render();
+}
+
+function viewAdminSettings(){
+  return `
+    <div class="page-head"><div class="eyebrow">Super Admin</div><h1>System Settings</h1><div class="sub">Ranking weights, capacity limits, fees and promo codes.</div></div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>8-Factor Ranking Weights ${indicative()}</h3>
+        <div style="margin-top:12px;">
+          ${[['Legal Verification',25],['Dispute / Title Risk',20],['Location Potential',15],['Valuation Attractiveness',15],['Document Completeness',10],['Freshness',5],['Investor Engagement',5],['Admin Priority',5]].map(([l,v])=>`
+            <div class="ranking-bar"><span class="rl">${l}</span><div class="rt meter"><div class="fill" style="width:${v*2}%"></div></div><span class="rv">${v}%</span></div>`).join('')}
+        </div>
+        <div class="callout warn" style="margin-top:10px;">Awaiting client's final sign-off on weight values and recalculation frequency.</div>
+      </div>
+      <div class="card">
+        <h3>Operational Limits</h3>
+        <div class="field"><label>Max active cases per Employee ${indicative()}</label><input type="number" value="5"></div>
+        <div class="field"><label>Listing fee (₹, charged on approval) ${indicative()}</label><input type="number" value="4999"></div>
+        <div class="field"><label>GST rate (%) ${indicative()}</label><input type="number" value="18"></div>
+        <div class="field"><label>Active promo code</label><input type="text" value="NV-LAUNCH10 — 10% off"></div>
+        <button class="btn btn-primary" onclick="toast('Settings saved (illustrative)')">Save Settings</button>
+      </div>
+    </div>
+  `;
+}
+
+/* ================= RENDER DISPATCH ================= */
+
+const VIEW_FNS = {
+  owner:{dashboard:viewOwnerDashboard, wizard:viewOwnerWizard, action:viewOwnerAction, invoices:viewOwnerInvoices},
+  investor:{marketplace:viewInvestorMarketplace, shortlist:viewInvestorShortlist, eois:viewInvestorEois},
+  lawyer:{queue:viewLawyerQueue, workspace:viewLawyerWorkspace},
+  employee:{workload:viewEmployeeWorkload, intake:viewEmployeeIntake, history:viewEmployeeHistory},
+  subadmin:{inbox:viewSubAdminInbox, team:viewSubAdminTeam, overdue:viewSubAdminOverdue},
+  superadmin:{console:viewAdminConsole, approval:viewAdminApproval, org:viewAdminOrg, settings:viewAdminSettings},
+};
+
+function render(){
+  const app = document.getElementById('app');
+  if(state.screen === 'site'){ app.innerHTML = viewSite(); return; }
+  if(state.screen === 'login'){ app.innerHTML = viewLogin(); return; }
+  if(state.screen === 'otp'){ app.innerHTML = viewOtp(); return; }
+  if(state.screen === 'rolepick'){ app.innerHTML = viewRolePick(); return; }
+
+  app.innerHTML = renderApp();
+  const fn = (VIEW_FNS[state.role] && VIEW_FNS[state.role][state.view]) || viewOwnerDashboard;
+  document.getElementById('main').innerHTML = fn();
+  document.getElementById('notifPip') && (document.getElementById('notifPip').style.display = state.notifCount>0 ? 'block' : 'none');
+  const rt = document.getElementById('railToggle');
+  if(rt) rt.style.display = window.innerWidth<=760 ? 'flex' : 'none';
+}
+
+render();
+</script>
+</body>
+</html>
