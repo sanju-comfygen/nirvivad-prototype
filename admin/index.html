@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Nirvivad Core — Admin</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --ink:#e9ecf5; --ink-soft:#aab2ca; --ink-faint:#7680a0;
+    --bg:#0b0f1a; --surface:#131828; --surface-sunken:#1a2036;
+    --border:#252c47; --border-strong:#37406a;
+    --blue:#5f8cf0; --blue-deep:#3a5fce; --blue-soft:#1c2748;
+    --gold:#e0ac53; --gold-soft:#302410;
+    --forest:#5fc79a; --forest-soft:#12291f;
+    --brick:#e5876c; --brick-soft:#331c15;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.5);
+    color-scheme: dark;
+  }
+  *{box-sizing:border-box;}
+  html,body{ height:100%; margin:0; }
+  img{ max-width:100%; } [hidden]{ display:none !important; }
+  body{ background:var(--bg); color:var(--ink); font-family:'Public Sans',system-ui,sans-serif; font-size:14px; line-height:1.55; }
+  h1,h2,h3{ font-family:'Fraunces',Georgia,serif; text-wrap:balance; margin:0; }
+  .mono{ font-family:'JetBrains Mono',ui-monospace,monospace; }
+  button{ font-family:inherit; }
+  :focus-visible{ outline:2px solid var(--blue); outline-offset:2px; }
+  #app{ min-height:100%; display:flex; flex-direction:column; }
+
+  /* ---------- Login ---------- */
+  .login-shell{
+    flex:1; display:flex; align-items:center; justify-content:center; padding:32px 20px;
+    background:
+      radial-gradient(900px 400px at 15% -10%, rgba(95,140,240,.14), transparent 60%),
+      radial-gradient(700px 360px at 100% 100%, rgba(224,172,83,.08), transparent 60%);
+  }
+  .login-card{ width:100%; max-width:400px; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:32px 30px; box-shadow:var(--shadow); }
+  .brand{ display:flex; align-items:center; gap:9px; font-family:'Fraunces',serif; font-weight:700; font-size:17px; justify-content:center; margin-bottom:6px; }
+  .brand .mark{
+    width:30px; height:30px; border-radius:8px; background:linear-gradient(155deg,var(--blue),var(--blue-deep));
+    display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif; font-weight:700; font-size:14px; color:#fff;
+  }
+  .module-tag{
+    display:block; text-align:center; font-size:10.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--gold); margin-bottom:22px;
+  }
+  .login-card h1{ font-size:19px; font-weight:600; text-align:center; margin-bottom:6px; }
+  .login-card .sub{ text-align:center; color:var(--ink-soft); font-size:12.5px; margin-bottom:24px; }
+  .field{ margin-bottom:14px; }
+  .field label{ display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:var(--ink-soft); }
+  .field input, .field select{
+    width:100%; border:1px solid var(--border-strong); background:var(--surface-sunken); color:var(--ink);
+    border-radius:8px; padding:10px 12px; font-size:13.5px; font-family:inherit;
+  }
+  .field input:focus, .field select:focus{ outline:2px solid var(--blue); outline-offset:1px; }
+  .otp-row{ display:flex; gap:7px; justify-content:center; margin-bottom:16px; }
+  .otp-row input{ width:40px; height:48px; text-align:center; font-size:18px; font-weight:700; border:1px solid var(--border-strong); border-radius:8px; background:var(--surface-sunken); color:var(--ink); }
+  .otp-row input:focus{ outline:2px solid var(--blue); outline-offset:1px; }
+  .btn{ display:inline-flex; align-items:center; justify-content:center; gap:6px; border-radius:9px; border:1px solid var(--border-strong); background:var(--surface-sunken); color:var(--ink); font-weight:600; font-size:13.5px; padding:10px 16px; cursor:pointer; }
+  .btn:hover{ background:var(--border); }
+  .btn-primary{ background:var(--blue); border-color:var(--blue); color:#0b0f1a; }
+  .btn-primary:hover{ filter:brightness(1.08); }
+  .btn-block{ width:100%; }
+  .login-foot{ text-align:center; font-size:12px; color:var(--ink-faint); margin-top:16px; }
+  .login-foot a{ color:var(--blue); font-weight:600; cursor:pointer; text-decoration:none; }
+  .demo-row{ display:flex; gap:8px; margin-top:18px; }
+  .demo-row button{ flex:1; }
+  .security-note{
+    display:flex; gap:9px; align-items:flex-start; background:var(--surface-sunken); border:1px solid var(--border);
+    border-radius:9px; padding:11px 13px; font-size:11.5px; color:var(--ink-faint); margin-top:20px;
+  }
+  .back-link{ display:block; text-align:center; margin-top:18px; font-size:12px; color:var(--ink-faint); text-decoration:none; }
+  .back-link:hover{ color:var(--ink-soft); }
+
+  /* ---------- App shell ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:40; background:var(--surface); border-bottom:1px solid var(--border);
+    padding:10px 20px; display:flex; align-items:center; gap:14px;
+  }
+  .topbar .brand{ margin:0; justify-content:flex-start; }
+  .topbar-spacer{ flex:1; }
+  .env-badge{
+    font-size:10px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--gold);
+    background:var(--gold-soft); border:1px solid var(--gold); padding:3px 9px; border-radius:999px;
+  }
+  .role-badge{
+    font-size:11.5px; font-weight:700; background:var(--blue-soft); color:var(--blue); padding:5px 11px; border-radius:999px;
+  }
+  .btn-sm{ padding:6px 12px; font-size:12px; }
+
+  .body-row{ flex:1; display:flex; min-height:0; }
+  .rail{ width:216px; flex-shrink:0; background:var(--surface); border-right:1px solid var(--border); padding:16px 10px; }
+  .rail-label{ font-size:10px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); padding:8px 10px 6px; }
+  .rail button.nav-item{ display:flex; align-items:center; gap:9px; width:100%; text-align:left; border:none; background:none; padding:9px 10px; border-radius:8px; font-size:13px; font-weight:600; color:var(--ink-soft); cursor:pointer; margin-bottom:2px; }
+  .rail button.nav-item:hover{ background:var(--surface-sunken); color:var(--ink); }
+  .rail button.nav-item.active{ background:var(--blue); color:#0b0f1a; }
+
+  main{ flex:1; padding:28px 30px 60px; overflow-y:auto; }
+  .container{ max-width:1100px; margin:0 auto; }
+  .page-head{ margin-bottom:22px; }
+  .page-head h1{ font-size:24px; font-weight:600; margin-bottom:4px; }
+  .page-head .sub{ color:var(--ink-soft); font-size:13px; }
+
+  .grid-4{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+  @media (max-width:900px){ .grid-4{ grid-template-columns:repeat(2,1fr); } }
+  .card{ background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:16px; box-shadow:var(--shadow); }
+  .stat-tile .lbl{ font-size:11.5px; color:var(--ink-soft); font-weight:600; }
+  .stat-tile .num{ font-family:'Fraunces',serif; font-size:26px; font-weight:600; margin:4px 0; font-variant-numeric:tabular-nums; }
+  .empty{ text-align:center; padding:50px 20px; color:var(--ink-faint); }
+  .empty .ic{ font-size:28px; margin-bottom:10px; }
+
+  @media (max-width:760px){
+    .rail{ position:fixed; left:0; top:52px; bottom:0; z-index:30; transform:translateX(-100%); transition:transform .2s; }
+    .rail.open{ transform:none; }
+    main{ padding:18px 16px 50px; }
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+  const CORE_ROLES = {
+    superadmin:{ label:'Super Admin', nav:[
+      {id:'console', label:'Master Case Console', icon:'▦'},
+      {id:'verify', label:'Professional Verification', icon:'✓'},
+      {id:'team', label:'Team & Org', icon:'☺'},
+      {id:'settings', label:'System Settings', icon:'⚙'},
+    ]},
+    subadmin:{ label:'Sub Admin', nav:[
+      {id:'inbox', label:'Incoming Requests', icon:'▦'},
+      {id:'signoff', label:'Pending Sign-off', icon:'✓'},
+      {id:'team', label:'My Employees', icon:'☺'},
+    ]},
+    employee:{ label:'Employee', nav:[
+      {id:'queue', label:'My Queue', icon:'▦'},
+      {id:'history', label:'Communication History', icon:'✉'},
+    ]},
+  };
+
+  let state = { screen:'login', authEmail:'', otp:['','','','','',''], role:null, view:null };
+
+  function el(html){ const d=document.createElement('div'); d.innerHTML=html.trim(); return d.firstElementChild; }
+  function render(){
+    const app = document.getElementById('app');
+    if(state.screen==='login'){ app.innerHTML = viewLogin(); return; }
+    if(state.screen==='otp'){ app.innerHTML = viewOtp(); return; }
+    app.innerHTML = viewApp();
+    const fn = VIEW_FNS[state.view] || (()=>'<div class="empty"><div class="ic">▦</div>No content yet</div>');
+    document.getElementById('main').innerHTML = fn();
+  }
+
+  function viewLogin(){
+    return `
+      <div class="login-shell">
+        <div class="login-card">
+          <div class="brand"><span class="mark">N</span>Nirvivad</div>
+          <span class="module-tag">Core Operations Module</span>
+          <h1>Staff Sign-in</h1>
+          <div class="sub">For Employees, Sub Admins and Super Admin only.</div>
+          <div class="field"><label>Work email</label><input type="email" id="emailInput" placeholder="you@nirvivad.example" value="${state.authEmail}"></div>
+          <div class="field"><label>Role</label>
+            <select id="roleSelect">
+              <option value="employee">Employee</option>
+              <option value="subadmin">Sub Admin</option>
+              <option value="superadmin">Super Admin</option>
+            </select>
+          </div>
+          <button class="btn btn-primary btn-block" onclick="requestOtp()">Continue</button>
+          <div class="security-note">🔒 This is a restricted internal portal. Access requires a verified staff account and is logged for audit purposes.</div>
+          <a class="back-link" href="../index.html">← Back to nirvivad.example</a>
+        </div>
+      </div>
+    `;
+  }
+  function requestOtp(){
+    const email = document.getElementById('emailInput').value.trim();
+    state.authEmail = email || 'staff@nirvivad.example';
+    state.pendingRole = document.getElementById('roleSelect').value;
+    state.screen = 'otp';
+    render();
+  }
+
+  function viewOtp(){
+    return `
+      <div class="login-shell">
+        <div class="login-card">
+          <div class="brand"><span class="mark">N</span>Nirvivad</div>
+          <span class="module-tag">Core Operations Module</span>
+          <h1>Enter verification code</h1>
+          <div class="sub">6-digit code sent to <strong>${state.authEmail}</strong></div>
+          <div class="otp-row">
+            ${[0,1,2,3,4,5].map(i=>`<input maxlength="1" inputmode="numeric" id="otp${i}" oninput="otpMove(${i},this)">`).join('')}
+          </div>
+          <button class="btn btn-primary btn-block" onclick="verifyOtp()">Verify &amp; Sign in</button>
+          <div class="login-foot">Didn't get a code? <a onclick="requestOtp()">Resend</a></div>
+          <a class="back-link" href="../index.html">← Back to nirvivad.example</a>
+        </div>
+      </div>
+    `;
+  }
+  function otpMove(i,node){
+    state.otp[i] = node.value.replace(/[^0-9]/g,'').slice(0,1);
+    if(state.otp[i] && i<5) document.getElementById('otp'+(i+1)).focus();
+  }
+  function verifyOtp(){
+    state.role = state.pendingRole;
+    state.view = CORE_ROLES[state.role].nav[0].id;
+    state.screen = 'app';
+    render();
+  }
+
+  function viewApp(){
+    const r = CORE_ROLES[state.role];
+    return `
+      <div id="appShell" style="min-height:100%; display:flex; flex-direction:column;">
+        <div class="topbar">
+          <div class="brand"><span class="mark">N</span>Nirvivad</div>
+          <span class="env-badge">Core Ops</span>
+          <div class="topbar-spacer"></div>
+          <select class="btn btn-sm" style="cursor:pointer;" onchange="switchRole(this.value)">
+            ${Object.keys(CORE_ROLES).map(k=>`<option value="${k}" ${k===state.role?'selected':''}>Preview: ${CORE_ROLES[k].label}</option>`).join('')}
+          </select>
+          <span class="role-badge">${r.label}</span>
+          <button class="btn btn-sm" onclick="logout()">Log out</button>
+        </div>
+        <div class="body-row">
+          <nav class="rail">
+            <div class="rail-label">${r.label}</div>
+            ${r.nav.map(n=>`<button class="nav-item ${n.id===state.view?'active':''}" onclick="setView('${n.id}')"><span>${n.icon}</span>${n.label}</button>`).join('')}
+          </nav>
+          <main><div class="container" id="main"></div></main>
+        </div>
+      </div>
+    `;
+  }
+  function switchRole(role){ state.role = role; state.view = CORE_ROLES[role].nav[0].id; render(); }
+  function setView(v){ state.view = v; render(); }
+  function logout(){ state = { screen:'login', authEmail:'', otp:['','','','','',''], role:null, view:null }; render(); }
+
+  const VIEW_FNS = {
+    console: ()=>`
+      <div class="page-head"><h1>Master Case Management Console</h1><div class="sub">Full visibility across every active case in the system.</div></div>
+      <div class="grid-4" style="margin-bottom:20px;">
+        <div class="card stat-tile"><div class="lbl">Total Active Cases</div><div class="num">0</div></div>
+        <div class="card stat-tile"><div class="lbl">Pending Sign-off</div><div class="num">0</div></div>
+        <div class="card stat-tile"><div class="lbl">In Sub Admin Queue</div><div class="num">0</div></div>
+        <div class="card stat-tile"><div class="lbl">Live Listings</div><div class="num">0</div></div>
+      </div>
+      <div class="card empty"><div class="ic">▦</div>No cases yet — this is a placeholder dashboard. Case data connects here once the workflow is built.</div>
+    `,
+    verify: ()=>`
+      <div class="page-head"><h1>Professional Verification Queue</h1><div class="sub">Lawyer, CA, Arbitrator and Broker signups awaiting credential review.</div></div>
+      <div class="card empty"><div class="ic">✓</div>No pending verifications — placeholder view.</div>
+    `,
+    team: ()=>`
+      <div class="page-head"><h1>Team &amp; Org</h1><div class="sub">Create and manage Sub Admin and Employee accounts.</div></div>
+      <div class="card empty"><div class="ic">☺</div>Org structure placeholder — build pending.</div>
+    `,
+    settings: ()=>`
+      <div class="page-head"><h1>System Settings</h1><div class="sub">Ranking weights, capacity limits, fees and promo codes.</div></div>
+      <div class="card empty"><div class="ic">⚙</div>Settings placeholder — build pending.</div>
+    `,
+    inbox: ()=>`
+      <div class="page-head"><h1>Incoming Requests</h1><div class="sub">New property submissions land here first, for assignment to an Employee.</div></div>
+      <div class="card empty"><div class="ic">📥</div>Inbox is empty — placeholder view.</div>
+    `,
+    signoff: ()=>`
+      <div class="page-head"><h1>Pending Sign-off</h1><div class="sub">Cases where an Employee has proposed an outcome awaiting your approval.</div></div>
+      <div class="card empty"><div class="ic">✓</div>Nothing pending — placeholder view.</div>
+    `,
+    queue: ()=>`
+      <div class="page-head"><h1>My Queue</h1><div class="sub">Cases assigned to you by your Sub Admin.</div></div>
+      <div class="card empty"><div class="ic">▦</div>No cases assigned — placeholder view.</div>
+    `,
+    history: ()=>`
+      <div class="page-head"><h1>Communication History</h1><div class="sub">Full request/response trail per case.</div></div>
+      <div class="card empty"><div class="ic">✉</div>No activity yet — placeholder view.</div>
+    `,
+  };
+
+  render();
+</script>
+</body>
+</html>

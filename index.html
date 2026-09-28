@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Nirvivad</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --ink:#151b2c; --ink-soft:#4d5670; --ink-faint:#8890a6;
+    --bg:#f2f4f9; --surface:#ffffff; --surface-sunken:#e9ecf5;
+    --border:#dce1ee; --border-strong:#c2cae0;
+    --blue:#1749b8; --blue-deep:#0d2f7a; --blue-soft:#e4ecfc;
+    --sky:#2e8fe0; --sky-soft:#e2f1fd;
+    --gold:#c9922e; --gold-soft:#f7ecd8;
+    --forest:#237a56; --forest-soft:#dff0e7;
+    --brick:#c0432a; --brick-soft:#fbe5df;
+    --shadow: 0 1px 2px rgba(13,29,74,.06), 0 6px 20px rgba(13,29,74,.08);
+    --shadow-lg: 0 8px 30px rgba(13,29,74,.12), 0 2px 8px rgba(13,29,74,.08);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#eaedf7; --ink-soft:#b7bfd6; --ink-faint:#7d87a3;
+      --bg:#0c1220; --surface:#131b2f; --surface-sunken:#1a2440;
+      --border:#263252; --border-strong:#354672;
+      --blue:#5f8cf0; --blue-deep:#9db6f7; --blue-soft:#1b2748;
+      --sky:#6fb6f2; --sky-soft:#152540;
+      --gold:#e0ac53; --gold-soft:#332411;
+      --forest:#5fc79a; --forest-soft:#12291f;
+      --brick:#e5876c; --brick-soft:#331c15;
+      --shadow: 0 1px 2px rgba(0,0,0,.35), 0 8px 24px rgba(0,0,0,.4);
+      --shadow-lg: 0 12px 36px rgba(0,0,0,.5), 0 2px 10px rgba(0,0,0,.4);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#eaedf7; --ink-soft:#b7bfd6; --ink-faint:#7d87a3;
+    --bg:#0c1220; --surface:#131b2f; --surface-sunken:#1a2440;
+    --border:#263252; --border-strong:#354672;
+    --blue:#5f8cf0; --blue-deep:#9db6f7; --blue-soft:#1b2748;
+    --sky:#6fb6f2; --sky-soft:#152540;
+    --gold:#e0ac53; --gold-soft:#332411;
+    --forest:#5fc79a; --forest-soft:#12291f;
+    --brick:#e5876c; --brick-soft:#331c15;
+    --shadow: 0 1px 2px rgba(0,0,0,.35), 0 8px 24px rgba(0,0,0,.4);
+    --shadow-lg: 0 12px 36px rgba(0,0,0,.5), 0 2px 10px rgba(0,0,0,.4);
+    color-scheme: dark;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{ margin:0; }
+  img{ max-width:100%; }
+  [hidden]{ display:none !important; }
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:'Public Sans', system-ui, sans-serif;
+    font-size:15px; line-height:1.6;
+  }
+  h1,h2,h3,h4{ font-family:'Fraunces', Georgia, serif; text-wrap:balance; letter-spacing:-0.01em; margin:0; }
+  .mono{ font-family:'JetBrains Mono', ui-monospace, monospace; }
+  a{ color:var(--blue); }
+  ::selection{ background:var(--blue-soft); }
+  :focus-visible{ outline:2px solid var(--blue); outline-offset:2px; }
+  button{ font-family:inherit; }
+
+  /* ---------- Header ---------- */
+  .site-header{
+    position:sticky; top:env(safe-area-inset-top,0px); z-index:50;
+    background:var(--surface); border-bottom:1px solid var(--border);
+    padding:0 24px; padding-top:env(safe-area-inset-top,0px);
+  }
+  .header-inner{ max-width:1180px; margin:0 auto; height:66px; display:flex; align-items:center; gap:24px; }
+  .brand{ display:flex; align-items:center; gap:9px; font-family:'Fraunces',serif; font-weight:700; font-size:19px; white-space:nowrap; color:var(--ink); text-decoration:none; flex-shrink:0; }
+  .brand .mark{
+    width:32px; height:32px; border-radius:9px;
+    background:linear-gradient(155deg,var(--sky),var(--blue-deep));
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces',serif; font-weight:700; font-size:16px; color:#fff; flex-shrink:0;
+  }
+  .main-nav{ display:flex; gap:4px; flex:1; }
+  .main-nav a{
+    color:var(--ink-soft); text-decoration:none; font-weight:600; font-size:13.5px;
+    padding:8px 12px; border-radius:7px; cursor:pointer; white-space:nowrap;
+  }
+  .main-nav a:hover{ color:var(--ink); background:var(--surface-sunken); }
+  .main-nav a.current{ color:var(--blue); background:var(--blue-soft); }
+  .header-actions{ display:flex; gap:8px; flex-shrink:0; align-items:center; }
+  .menu-toggle{ display:none; width:38px; height:38px; border-radius:8px; border:1px solid var(--border); background:var(--surface); cursor:pointer; font-size:16px; align-items:center; justify-content:center; }
+
+  @media (max-width:980px){
+    .main-nav{ display:none; }
+    .menu-toggle{ display:flex; }
+  }
+  .mobile-nav{
+    display:none; flex-direction:column; gap:2px; padding:10px 0 16px; border-top:1px solid var(--border);
+  }
+  .mobile-nav.open{ display:flex; }
+  .mobile-nav a{ color:var(--ink-soft); text-decoration:none; font-weight:600; font-size:14px; padding:10px 6px; border-radius:7px; cursor:pointer; }
+  .mobile-nav a.current{ color:var(--blue); background:var(--blue-soft); }
+
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:6px;
+    border-radius:9px; border:1px solid var(--border-strong); background:var(--surface);
+    color:var(--ink); font-weight:600; font-size:13.5px; padding:9px 16px; cursor:pointer;
+    text-decoration:none; white-space:nowrap;
+  }
+  .btn:hover{ background:var(--surface-sunken); }
+  .btn-primary{ background:var(--blue); border-color:var(--blue); color:#fff; }
+  .btn-primary:hover{ background:var(--blue-deep); border-color:var(--blue-deep); }
+  .btn-lg{ padding:13px 24px; font-size:14.5px; border-radius:10px; }
+  .btn-sm{ padding:6px 12px; font-size:12.5px; }
+  .btn-block{ width:100%; }
+
+  /* ---------- Page scaffolding ---------- */
+  main{ min-height:60vh; }
+  .page{ display:none; }
+  .page.active{ display:block; }
+
+  .section{ max-width:1180px; margin:0 auto; padding:64px 24px; }
+  .section.tight{ padding:44px 24px; }
+  .section-head{ max-width:640px; margin:0 auto 36px; text-align:center; }
+  .section-head.left{ margin:0 0 30px; text-align:left; }
+  .eyebrow{ display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); margin-bottom:10px; }
+  .section-head h2{ font-size:clamp(24px,3.4vw,32px); font-weight:600; margin-bottom:10px; }
+  .section-head p{ color:var(--ink-soft); font-size:14.5px; }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    padding:72px 24px 0; text-align:center;
+    background: radial-gradient(1200px 460px at 50% -140px, var(--blue-soft), transparent 70%);
+  }
+  .hero-inner{ max-width:760px; margin:0 auto; }
+  .hero h1{ font-size:clamp(32px,5.2vw,50px); font-weight:600; margin:14px 0 16px; }
+  .hero .lead{ color:var(--ink-soft); font-size:16px; max-width:580px; margin:0 auto 30px; }
+  .hero .cta-row{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-bottom:44px; }
+
+  .search-panel{
+    max-width:820px; margin:0 auto; background:var(--surface); border:1px solid var(--border);
+    border-radius:16px; padding:18px; box-shadow:var(--shadow-lg); display:flex; gap:10px; flex-wrap:wrap;
+    transform:translateY(28px); text-align:left;
+  }
+  .search-panel select, .search-panel input{
+    border:1px solid var(--border-strong); background:var(--surface); color:var(--ink);
+    border-radius:9px; padding:11px 12px; font-size:13.5px; font-family:inherit;
+  }
+  .search-panel .f-loc{ flex:2; min-width:180px; }
+  .search-panel .f-cat{ flex:1; min-width:140px; }
+  .search-panel .f-dispute{ flex:1; min-width:150px; }
+  .search-panel .f-go{ flex-shrink:0; }
+  @media (max-width:640px){ .search-panel{ flex-direction:column; } .search-panel > *{ width:100%; } }
+
+  .stat-strip{
+    display:flex; justify-content:center; gap:0; flex-wrap:wrap;
+    padding:64px 24px 40px; background:var(--surface); border-bottom:1px solid var(--border); margin-top:28px;
+  }
+  .stat-strip .s{ text-align:center; padding:0 32px; border-left:1px solid var(--border); }
+  .stat-strip .s:first-child{ border-left:none; }
+  .stat-strip .s .n{ font-family:'Fraunces',serif; font-weight:700; font-size:28px; color:var(--blue); }
+  .stat-strip .s .l{ font-size:11.5px; color:var(--ink-faint); font-weight:600; margin-top:2px; }
+  @media (max-width:700px){ .stat-strip .s{ padding:0 16px; border-left:none; width:50%; margin-bottom:16px; } }
+
+  /* ---------- Flow steps ---------- */
+  .flow-steps{ display:flex; gap:18px; }
+  @media (max-width:820px){ .flow-steps{ flex-direction:column; } }
+  .flow-step{ flex:1; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px; box-shadow:var(--shadow); }
+  .flow-step .num{
+    width:34px; height:34px; border-radius:50%; background:var(--blue); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; margin-bottom:12px;
+  }
+  .flow-step h3{ font-size:15px; font-weight:700; margin-bottom:6px; font-family:'Public Sans'; }
+  .flow-step p{ font-size:12.5px; color:var(--ink-faint); margin:0; }
+
+  /* ---------- Role / feature grids ---------- */
+  .grid-4{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+  .grid-3{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  @media (max-width:900px){ .grid-4{ grid-template-columns:repeat(2,1fr); } .grid-3{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:560px){ .grid-4{ grid-template-columns:1fr; } .grid-3{ grid-template-columns:1fr; } }
+
+  .card{ background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px; box-shadow:var(--shadow); }
+  .role-card .ic{ width:40px; height:40px; border-radius:11px; background:var(--blue-soft); color:var(--blue); display:flex; align-items:center; justify-content:center; font-size:18px; margin-bottom:12px; }
+  .role-card h3{ font-size:15px; font-weight:700; margin-bottom:5px; font-family:'Public Sans'; }
+  .role-card p{ font-size:12.5px; color:var(--ink-faint); margin:0; }
+
+  /* ---------- Listing preview cards ---------- */
+  .listing-card{ overflow:hidden; padding:0; }
+  .listing-card .thumb{
+    height:140px; background:linear-gradient(135deg,var(--sky-soft),var(--blue-soft));
+    display:flex; align-items:center; justify-content:center; font-size:30px; color:var(--blue); position:relative;
+  }
+  .listing-card .thumb .score-badge{
+    position:absolute; top:10px; right:10px; background:var(--surface); border-radius:999px; padding:4px 10px;
+    font-size:11px; font-weight:700; box-shadow:var(--shadow); display:flex; align-items:center; gap:4px;
+  }
+  .listing-card .thumb .score-badge .dot{ width:6px; height:6px; border-radius:50%; background:var(--forest); }
+  .listing-card .body{ padding:16px; }
+  .listing-card h3{ font-size:14px; font-weight:700; margin-bottom:4px; font-family:'Public Sans'; }
+  .listing-card .loc{ font-size:12px; color:var(--ink-faint); margin-bottom:10px; }
+  .listing-card .tags{ display:flex; gap:6px; flex-wrap:wrap; }
+  .pill{ display:inline-flex; align-items:center; gap:5px; font-size:10.5px; font-weight:700; padding:3px 8px; border-radius:999px; }
+  .pill.forest{ background:var(--forest-soft); color:var(--forest); }
+  .pill.gold{ background:var(--gold-soft); color:var(--gold); }
+  .pill.grey{ background:var(--surface-sunken); color:var(--ink-soft); }
+
+  /* ---------- Testimonials ---------- */
+  .testimonial-card{ display:flex; flex-direction:column; gap:14px; }
+  .testimonial-card .quote{ font-size:13.5px; color:var(--ink-soft); line-height:1.65; }
+  .testimonial-card .quote::before{ content:'\201C'; font-family:'Fraunces',serif; font-size:28px; color:var(--gold); line-height:0; display:block; margin-bottom:4px; }
+  .testimonial-person{ display:flex; align-items:center; gap:10px; }
+  .avatar{
+    width:38px; height:38px; border-radius:50%; background:var(--blue-soft); color:var(--blue);
+    display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; flex-shrink:0;
+  }
+  .testimonial-person .name{ font-weight:700; font-size:13px; }
+  .testimonial-person .role{ font-size:11.5px; color:var(--ink-faint); }
+  .stars{ color:var(--gold); font-size:13px; letter-spacing:2px; }
+
+  /* ---------- Trust section ---------- */
+  .trust-card h3{ font-size:14.5px; font-weight:700; margin-bottom:6px; font-family:'Public Sans'; }
+  .trust-card p{ font-size:12.5px; color:var(--ink-faint); margin:0; }
+  .trust-card .ic{ font-size:22px; margin-bottom:10px; }
+
+  /* ---------- CTA band ---------- */
+  .cta-band{
+    background:linear-gradient(135deg,var(--blue-deep),var(--blue));
+    color:#fff; border-radius:20px; padding:48px 32px; text-align:center; margin:0 24px;
+  }
+  .cta-band h2{ color:#fff; font-size:clamp(22px,3vw,30px); margin-bottom:10px; }
+  .cta-band p{ color:rgba(255,255,255,.82); font-size:14px; max-width:480px; margin:0 auto 24px; }
+  .cta-band .cta-row{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+  .cta-band .btn{ border-color:transparent; }
+  .cta-band .btn-ghost{ background:rgba(255,255,255,.12); color:#fff; border-color:rgba(255,255,255,.3); }
+  .cta-band .btn-ghost:hover{ background:rgba(255,255,255,.2); }
+
+  /* ---------- Footer ---------- */
+  .site-footer{ background:var(--blue-deep); color:rgba(255,255,255,.7); margin-top:64px; }
+  .footer-inner{ max-width:1180px; margin:0 auto; padding:52px 24px 28px; }
+  .footer-grid{ display:grid; grid-template-columns:1.6fr 1fr 1fr 1fr; gap:32px; margin-bottom:36px; }
+  @media (max-width:820px){ .footer-grid{ grid-template-columns:1fr 1fr; } }
+  @media (max-width:480px){ .footer-grid{ grid-template-columns:1fr; } }
+  .footer-grid .brand{ color:#fff; margin-bottom:10px; }
+  .footer-grid .fdesc{ font-size:12.5px; line-height:1.6; max-width:280px; color:rgba(255,255,255,.6); }
+  .footer-col h4{ color:#fff; font-family:'Public Sans'; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; margin-bottom:14px; }
+  .footer-col a{ display:block; color:rgba(255,255,255,.68); text-decoration:none; font-size:13px; margin-bottom:10px; cursor:pointer; }
+  .footer-col a:hover{ color:#fff; }
+  .footer-bottom{ border-top:1px solid rgba(255,255,255,.14); padding-top:22px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; font-size:12px; }
+  .footer-bottom .legal-links{ display:flex; gap:16px; flex-wrap:wrap; }
+  .footer-bottom .legal-links a{ color:rgba(255,255,255,.6); text-decoration:none; cursor:pointer; }
+  .footer-bottom .legal-links a:hover{ color:#fff; }
+
+  /* ---------- Simple content pages (About/Contact/Legal) ---------- */
+  .doc-header{ background:var(--surface); border-bottom:1px solid var(--border); padding:44px 24px; text-align:center; }
+  .doc-header h1{ font-size:clamp(26px,4vw,36px); margin-bottom:8px; }
+  .doc-header p{ color:var(--ink-soft); font-size:14px; }
+  .doc-body{ max-width:760px; margin:0 auto; padding:48px 24px 72px; }
+  .doc-body h2{ font-size:19px; font-weight:700; margin:32px 0 10px; font-family:'Public Sans'; }
+  .doc-body h2:first-child{ margin-top:0; }
+  .doc-body p{ color:var(--ink-soft); font-size:14px; margin:0 0 14px; }
+  .doc-body ul{ color:var(--ink-soft); font-size:14px; padding-left:20px; margin:0 0 14px; }
+  .doc-body li{ margin-bottom:6px; }
+  .doc-body .updated{ font-size:12px; color:var(--ink-faint); margin-bottom:0; }
+  .placeholder-note{ background:var(--gold-soft); border:1px solid var(--gold); border-radius:10px; padding:13px 16px; font-size:12.5px; margin-bottom:28px; display:flex; gap:10px; }
+
+  .contact-grid{ display:grid; grid-template-columns:1fr 1fr; gap:32px; max-width:980px; margin:0 auto; padding:48px 24px 72px; }
+  @media (max-width:760px){ .contact-grid{ grid-template-columns:1fr; } }
+  .contact-info .item{ display:flex; gap:12px; margin-bottom:20px; }
+  .contact-info .ic{ width:38px; height:38px; border-radius:10px; background:var(--blue-soft); color:var(--blue); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+  .contact-info .t{ font-weight:700; font-size:13.5px; margin-bottom:2px; }
+  .contact-info .d{ font-size:13px; color:var(--ink-soft); }
+  .field{ margin-bottom:14px; }
+  .field label{ display:block; font-size:12.5px; font-weight:600; margin-bottom:5px; }
+  .field input, .field select, .field textarea{
+    width:100%; border:1px solid var(--border-strong); background:var(--surface); color:var(--ink);
+    border-radius:8px; padding:10px 12px; font-size:13.5px; font-family:inherit;
+  }
+  .field textarea{ resize:vertical; min-height:90px; }
+  .field input:focus, .field select:focus, .field textarea:focus{ outline:2px solid var(--blue); outline-offset:1px; }
+
+  .about-hero{ display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:center; max-width:1080px; margin:0 auto; padding:56px 24px; }
+  @media (max-width:820px){ .about-hero{ grid-template-columns:1fr; } }
+  .about-hero .art{
+    aspect-ratio:4/3; border-radius:18px; background:linear-gradient(135deg,var(--blue-soft),var(--sky-soft));
+    display:flex; align-items:center; justify-content:center; font-size:52px; color:var(--blue); box-shadow:var(--shadow);
+  }
+  .about-hero h1{ font-size:clamp(26px,4vw,36px); margin-bottom:14px; }
+  .about-hero p{ color:var(--ink-soft); font-size:14.5px; margin-bottom:14px; }
+
+  .value-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; max-width:1080px; margin:0 auto; padding:0 24px 64px; }
+  @media (max-width:760px){ .value-grid{ grid-template-columns:1fr; } }
+
+  .toast-stack{ position:fixed; bottom:22px; right:22px; z-index:200; display:flex; flex-direction:column; gap:8px; align-items:flex-end; }
+  .toast{ background:var(--ink); color:var(--bg); padding:11px 16px; border-radius:9px; font-size:12.5px; font-weight:600; box-shadow:var(--shadow); display:flex; align-items:center; gap:8px; }
+
+  @media (max-width:600px){
+    .header-inner{ height:60px; }
+    .hero{ padding-top:48px; }
+    .search-panel{ transform:none; margin-top:20px; }
+    .stat-strip{ padding-top:36px; }
+    .cta-band{ margin:0 16px; padding:36px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="#home" onclick="go('home')"><span class="mark">N</span>Nirvivad</a>
+    <nav class="main-nav">
+      <a onclick="go('home')" data-route="home">Home</a>
+      <a onclick="go('how')" data-route="how">How It Works</a>
+      <a onclick="go('about')" data-route="about">About Us</a>
+      <a onclick="go('testimonials')" data-route="testimonials">Testimonials</a>
+      <a onclick="go('contact')" data-route="contact">Contact Us</a>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-sm" href="user/index.html">Log in</a>
+      <a class="btn btn-sm btn-primary" href="user/index.html">List a Property</a>
+      <button class="menu-toggle" onclick="toggleMobileNav()" aria-label="Menu">☰</button>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a onclick="go('home')" data-route="home">Home</a>
+    <a onclick="go('how')" data-route="how">How It Works</a>
+    <a onclick="go('about')" data-route="about">About Us</a>
+    <a onclick="go('testimonials')" data-route="testimonials">Testimonials</a>
+    <a onclick="go('contact')" data-route="contact">Contact Us</a>
+  </div>
+</header>
+
+<main>
+
+  <!-- ================= HOME ================= -->
+  <div class="page" id="page-home">
+    <section class="hero">
+      <div class="hero-inner">
+        <span class="eyebrow">Property Dispute Resolution</span>
+        <h1>Turn disputed property into a verified, investable listing.</h1>
+        <p class="lead">Nirvivad connects property owners facing legal disputes with vetted lawyers, valuers and investors — every case verified before it goes anywhere near a buyer.</p>
+      </div>
+      <div class="search-panel">
+        <select class="f-loc"><option>All locations</option><option>Delhi NCR</option><option>Mumbai / Pune</option><option>Bengaluru</option><option>Indore / Nashik</option></select>
+        <select class="f-cat"><option>Property type</option><option>Residential</option><option>Commercial</option><option>Agricultural</option><option>Industrial</option></select>
+        <select class="f-dispute"><option>Dispute type</option><option>Title Dispute</option><option>Partition / Inheritance</option><option>Boundary Dispute</option></select>
+        <button class="btn btn-primary f-go" onclick="go('home'); toast('Search is illustrative in this prototype')">Search Listings</button>
+      </div>
+    </section>
+
+    <div class="stat-strip">
+      <div class="s"><div class="n">8</div><div class="l">Verification Factors</div></div>
+      <div class="s"><div class="n">100%</div><div class="l">Identity Protected</div></div>
+      <div class="s"><div class="n">3</div><div class="l">Independent Review Stages</div></div>
+      <div class="s"><div class="n">24×7</div><div class="l">Case Tracking</div></div>
+    </div>
+
+    <section class="section" id="how">
+      <div class="section-head">
+        <span class="eyebrow">How it works</span>
+        <h2>From submission to a verified listing</h2>
+        <p>A short intake gets your case moving — our team handles the rest.</p>
+      </div>
+      <div class="flow-steps">
+        <div class="flow-step"><div class="num">1</div><h3>Submit minimal details</h3><p>Tell us the basics about the property and the dispute. No lengthy forms up front.</p></div>
+        <div class="flow-step"><div class="num">2</div><h3>Our team takes over</h3><p>A case handler requests full details, documents and KYC, and coordinates the right experts.</p></div>
+        <div class="flow-step"><div class="num">3</div><h3>Independent verification</h3><p>Licensed professionals review title, valuation and legal risk before anything moves forward.</p></div>
+        <div class="flow-step"><div class="num">4</div><h3>Goes live, anonymised</h3><p>Verified listings reach investors with a transparent risk score — your identity stays hidden.</p></div>
+      </div>
+    </section>
+
+    <section class="section tight" style="background:var(--surface); max-width:none; border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+      <div style="max-width:1180px; margin:0 auto; padding:0 24px;">
+        <div class="section-head">
+          <span class="eyebrow">Featured listings</span>
+          <h2>Verified properties currently live</h2>
+          <p>Every listing shown has cleared legal verification. Owner identity is never disclosed.</p>
+        </div>
+        <div class="grid-3">
+          <div class="card listing-card">
+            <div class="thumb">🏢<span class="score-badge"><span class="dot"></span>81</span></div>
+            <div class="body">
+              <h3>Commercial Plot, MG Road Frontage</h3>
+              <div class="loc">Indore, Madhya Pradesh · 0.6 Acre</div>
+              <div class="tags"><span class="pill forest">Low Risk</span><span class="pill grey">Commercial</span></div>
+            </div>
+          </div>
+          <div class="card listing-card">
+            <div class="thumb">🏠<span class="score-badge"><span class="dot"></span>64</span></div>
+            <div class="body">
+              <h3>Residential Bungalow, Inheritance Case</h3>
+              <div class="loc">Pune, Maharashtra · 4,200 sq.ft</div>
+              <div class="tags"><span class="pill gold">Medium Risk</span><span class="pill grey">Residential</span></div>
+            </div>
+          </div>
+          <div class="card listing-card">
+            <div class="thumb">🌾<span class="score-badge"><span class="dot"></span>88</span></div>
+            <div class="body">
+              <h3>Agricultural Land, Cleared Title Dispute</h3>
+              <div class="loc">Nashik, Maharashtra · 3.1 Acre</div>
+              <div class="tags"><span class="pill forest">Low Risk</span><span class="pill grey">Agricultural</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="roles">
+      <div class="section-head">
+        <span class="eyebrow">Who it's for</span>
+        <h2>One platform, every party in the dispute</h2>
+      </div>
+      <div class="grid-4">
+        <div class="card role-card"><div class="ic">🏠</div><h3>Property Owner</h3><p>List a disputed property and track its case from submission to resolution.</p></div>
+        <div class="card role-card"><div class="ic">🔎</div><h3>Buyer / Investor</h3><p>Browse verified listings with transparent risk scores and place offers.</p></div>
+        <div class="card role-card"><div class="ic">⚖️</div><h3>Legal &amp; Financial Experts</h3><p>Lawyers, Chartered Accountants, Arbitrators and Brokers review assigned cases.</p></div>
+        <div class="card role-card"><div class="ic">🗂️</div><h3>Nirvivad Team</h3><p>Employees, Sub Admins and Super Admin verify and manage every case internally.</p></div>
+      </div>
+    </section>
+
+    <section class="section tight">
+      <div class="cta-band">
+        <h2>Have a disputed property you'd like resolved?</h2>
+        <p>List it in minutes. Our team handles verification, documentation and buyer coordination end to end.</p>
+        <div class="cta-row">
+          <a class="btn btn-lg" style="background:#fff; color:var(--blue-deep);" href="user/index.html">List Your Property</a>
+          <a class="btn btn-lg btn-ghost" onclick="go('how')">See How It Works</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ================= HOW IT WORKS ================= -->
+  <div class="page" id="page-how">
+    <div class="doc-header">
+      <span class="eyebrow">Services</span>
+      <h1>How Nirvivad Works</h1>
+      <p>A transparent path from a disputed property to a verified, resolved outcome.</p>
+    </div>
+    <div class="doc-body">
+      <h2>1. Submit your property</h2>
+      <p>Property owners begin with a short intake — your relationship to the property, its location, and the nature of the dispute. No lengthy forms and no payment at this stage.</p>
+      <h2>2. Our team reviews your case</h2>
+      <p>A case handler on our internal team reviews your submission and requests any additional details, documents, or identity verification (KYC) needed to proceed.</p>
+      <h2>3. Independent expert verification</h2>
+      <p>Depending on the nature of your dispute, we route your case to the right combination of professionals:</p>
+      <ul>
+        <li><strong>Lawyers</strong> review title deeds, legal rights, and court or arbitration records</li>
+        <li><strong>Chartered Accountants</strong> assess valuation, taxation, and financial due diligence</li>
+        <li><strong>Arbitrators</strong> review ongoing arbitration proceedings and tribunal orders where relevant</li>
+        <li><strong>Brokers</strong> provide market and location verification</li>
+      </ul>
+      <h2>4. Verification decision</h2>
+      <p>Once all required reviews are complete, your case is either approved and published anonymised on our Investor Marketplace, marked resolved without a public listing, or returned with a clear reason if it doesn't qualify.</p>
+      <h2>5. Investor engagement</h2>
+      <p>If your property goes live, verified investors can view a risk-scored summary and submit expressions of interest — all coordinated through our team. Your identity and contact details are never shared directly.</p>
+      <h2>6. Resolution</h2>
+      <p>Once a transaction is agreed or the dispute is otherwise resolved, your case is closed and archived, with a full audit trail retained internally.</p>
+    </div>
+  </div>
+
+  <!-- ================= ABOUT US ================= -->
+  <div class="page" id="page-about">
+    <div class="about-hero">
+      <div>
+        <span class="eyebrow">About Nirvivad</span>
+        <h1>Making disputed property transparent, verifiable, and investable.</h1>
+        <p>Disputed property is one of the most difficult asset classes to transact in — sellers struggle to prove clean title, and buyers have no reliable way to assess risk. Nirvivad exists to close that gap.</p>
+        <p>We combine structured legal, financial and arbitration review with a transparent scoring model, so property owners get a fair resolution path and investors get verified opportunities they can actually trust.</p>
+      </div>
+      <div class="art">🏛️</div>
+    </div>
+    <div class="value-grid">
+      <div class="card"><h3 style="font-size:15px; font-weight:700; margin-bottom:6px;">Verification first</h3><p style="font-size:12.5px; color:var(--ink-faint); margin:0;">No property reaches a buyer without a documented review by a licensed professional.</p></div>
+      <div class="card"><h3 style="font-size:15px; font-weight:700; margin-bottom:6px;">Identity protected</h3><p style="font-size:12.5px; color:var(--ink-faint); margin:0;">Owner identity is never disclosed to investors. All engagement is routed through our team.</p></div>
+      <div class="card"><h3 style="font-size:15px; font-weight:700; margin-bottom:6px;">Full accountability</h3><p style="font-size:12.5px; color:var(--ink-faint); margin:0;">Every status change, request and document is logged and traceable internally.</p></div>
+    </div>
+  </div>
+
+  <!-- ================= TESTIMONIALS ================= -->
+  <div class="page" id="page-testimonials">
+    <div class="doc-header">
+      <span class="eyebrow">Success stories</span>
+      <h1>What our users say</h1>
+      <p>Illustrative examples for this prototype — not verified customer accounts.</p>
+    </div>
+    <section class="section">
+      <div class="grid-3">
+        <div class="card testimonial-card">
+          <div class="stars">★★★★★</div>
+          <div class="quote">Our family's inheritance dispute had stalled for two years. Nirvivad's team got a lawyer and valuer on the case within a week, and we finally had a clear path to resolve it.</div>
+          <div class="testimonial-person"><div class="avatar">RM</div><div><div class="name">Rakesh Malhotra</div><div class="role">Property Owner, Sonipat</div></div></div>
+        </div>
+        <div class="card testimonial-card">
+          <div class="stars">★★★★★</div>
+          <div class="quote">The risk scoring gave me confidence to invest in a property I'd normally have avoided entirely. The verification report was thorough and easy to understand.</div>
+          <div class="testimonial-person"><div class="avatar">SK</div><div><div class="name">Sanjana Kapoor</div><div class="role">Investor, Pune</div></div></div>
+        </div>
+        <div class="card testimonial-card">
+          <div class="stars">★★★★☆</div>
+          <div class="quote">As a Chartered Accountant working assigned cases, the case file structure made due diligence fast — everything I needed was in one place.</div>
+          <div class="testimonial-person"><div class="avatar">VP</div><div><div class="name">Vivek Prasad</div><div class="role">Chartered Accountant, Panel Member</div></div></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ================= CONTACT ================= -->
+  <div class="page" id="page-contact">
+    <div class="doc-header">
+      <span class="eyebrow">Get in touch</span>
+      <h1>Contact Us</h1>
+      <p>Questions about listing a property, investing, or joining as a professional — we're here to help.</p>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <div class="item"><div class="ic">✉</div><div><div class="t">Email</div><div class="d">support@nirvivad.example</div></div></div>
+        <div class="item"><div class="ic">☎</div><div><div class="t">Phone</div><div class="d">+91 11 4000 0000 (Mon–Sat, 10am–6pm IST)</div></div></div>
+        <div class="item"><div class="ic">📍</div><div><div class="t">Office</div><div class="d">Nirvivad Technologies, New Delhi, India</div></div></div>
+        <div class="placeholder-note">ℹ️ Contact details shown are placeholders for this prototype and not yet finalized.</div>
+      </div>
+      <div class="card">
+        <div class="field"><label>Full name</label><input type="text" placeholder="Your name"></div>
+        <div class="field"><label>Email address</label><input type="email" placeholder="you@example.com"></div>
+        <div class="field"><label>I am a</label><select><option>Property Owner</option><option>Investor</option><option>Legal / Financial Professional</option><option>Other</option></select></div>
+        <div class="field"><label>Message</label><textarea placeholder="How can we help?"></textarea></div>
+        <button class="btn btn-primary btn-block" onclick="submitContact()">Send Message</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PRIVACY POLICY ================= -->
+  <div class="page" id="page-privacy">
+    <div class="doc-header"><span class="eyebrow">Legal</span><h1>Privacy Policy</h1></div>
+    <div class="doc-body">
+      <p class="updated">Placeholder content — final privacy policy pending legal review and client sign-off.</p>
+      <div class="placeholder-note">⚠️ This is illustrative placeholder text for prototype purposes only and is not the platform's final privacy policy.</div>
+      <h2>1. Information We Collect</h2>
+      <p>We collect information you provide directly, including contact details, property information, documents submitted for verification, and payment information processed through our payment partner.</p>
+      <h2>2. How We Use Information</h2>
+      <p>Information is used to operate the platform, verify property and identity information, coordinate case review with assigned professionals, and communicate case updates.</p>
+      <h2>3. Information Sharing</h2>
+      <p>Property Owner identity and contact details are never shared with Buyers/Investors. Case information is shared only with professionals formally assigned to that case.</p>
+      <h2>4. Data Retention</h2>
+      <p>Case documents and records are retained for the periods required by applicable law and platform policy. Specific retention periods are pending finalization.</p>
+      <h2>5. Your Rights</h2>
+      <p>You may request access to, correction of, or deletion of your personal information, subject to our legal and operational record-keeping requirements.</p>
+    </div>
+  </div>
+
+  <!-- ================= TERMS & CONDITIONS ================= -->
+  <div class="page" id="page-terms">
+    <div class="doc-header"><span class="eyebrow">Legal</span><h1>Terms &amp; Conditions</h1></div>
+    <div class="doc-body">
+      <p class="updated">Placeholder content — final terms pending legal review and client sign-off.</p>
+      <div class="placeholder-note">⚠️ This is illustrative placeholder text for prototype purposes only and is not the platform's final terms of service.</div>
+      <h2>1. Acceptance of Terms</h2>
+      <p>By using Nirvivad, you agree to these Terms &amp; Conditions and our Privacy Policy. If you do not agree, please do not use the platform.</p>
+      <h2>2. Listing Submissions</h2>
+      <p>Property Owners submitting a listing confirm that the information provided is accurate and that they hold the right to submit the property for review. A listing fee applies as described at the time of submission and is non-refundable.</p>
+      <h2>3. Verification Process</h2>
+      <p>All listings are subject to review by Nirvivad's internal team and assigned professionals before publication. Nirvivad reserves the right to reject or hold any submission that does not meet verification standards.</p>
+      <h2>4. Investor Conduct</h2>
+      <p>Buyers and Investors agree to engage with listed properties solely through Nirvivad's coordination process and not to attempt direct contact with a Property Owner outside the platform.</p>
+      <h2>5. Limitation of Liability</h2>
+      <p>Nirvivad facilitates verification and coordination but does not provide legal advice, legal certification, or guarantee the outcome of any dispute or transaction.</p>
+    </div>
+  </div>
+
+  <!-- ================= REFUND / CANCELLATION POLICY ================= -->
+  <div class="page" id="page-refund">
+    <div class="doc-header"><span class="eyebrow">Legal</span><h1>Refund &amp; Cancellation Policy</h1></div>
+    <div class="doc-body">
+      <p class="updated">Placeholder content — final fee, tax and refund rules pending client confirmation.</p>
+      <div class="placeholder-note">⚠️ This is illustrative placeholder text for prototype purposes only and is not the platform's final refund policy.</div>
+      <h2>1. Listing Fees</h2>
+      <p>The listing fee charged to Property Owners is non-refundable once submitted, regardless of the outcome of the verification process, including in the event of rejection.</p>
+      <h2>2. Cancellation Before Payment</h2>
+      <p>You may withdraw a property submission at any stage before payment is made without any charge.</p>
+      <h2>3. Promo Codes</h2>
+      <p>Promotional discount codes are applied at the time of payment and cannot be applied retroactively to a completed transaction.</p>
+      <h2>4. Disputed Charges</h2>
+      <p>If you believe you were charged in error, contact our support team within 7 days of the transaction for review.</p>
+    </div>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="#home" onclick="go('home')"><span class="mark">N</span>Nirvivad</a>
+        <p class="fdesc">A property dispute resolution platform connecting owners, verified professionals, and investors through a transparent, verified process.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a onclick="go('about')">About Us</a>
+        <a onclick="go('how')">How It Works</a>
+        <a onclick="go('testimonials')">Testimonials</a>
+        <a onclick="go('contact')">Contact Us</a>
+      </div>
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <a href="user/index.html">Property Owner Login</a>
+        <a href="user/index.html">Investor Login</a>
+        <a href="user/index.html">Professional Login</a>
+        <a href="admin/index.html">Nirvivad Team Login</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a onclick="go('privacy')">Privacy Policy</a>
+        <a onclick="go('terms')">Terms &amp; Conditions</a>
+        <a onclick="go('refund')">Refund &amp; Cancellation Policy</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2026 Nirvivad Technologies. All rights reserved.</div>
+      <div class="legal-links">
+        <a onclick="go('privacy')">Privacy</a>
+        <a onclick="go('terms')">Terms</a>
+        <a onclick="go('refund')">Refunds</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="toast-stack" id="toastStack"></div>
+
+<script>
+  const ROUTES = ['home','how','about','testimonials','contact','privacy','terms','refund'];
+
+  function go(route){
+    if(!ROUTES.includes(route)) route = 'home';
+    ROUTES.forEach(r=>{
+      const el = document.getElementById('page-'+r);
+      if(el) el.classList.toggle('active', r===route);
+    });
+    document.querySelectorAll('[data-route]').forEach(a=>{
+      a.classList.toggle('current', a.getAttribute('data-route')===route);
+    });
+    document.getElementById('mobileNav').classList.remove('open');
+    window.scrollTo(0,0);
+    try{ history.replaceState(null,'','#'+route); }catch(e){}
+  }
+
+  function toggleMobileNav(){
+    document.getElementById('mobileNav').classList.toggle('open');
+  }
+
+  function toast(msg){
+    const stack = document.getElementById('toastStack');
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.textContent = msg;
+    stack.appendChild(t);
+    setTimeout(()=>{ t.style.opacity='0'; t.style.transition='opacity .25s'; setTimeout(()=>t.remove(),250); }, 3000);
+  }
+
+  function submitContact(){
+    toast('Message sent — our team will be in touch');
+  }
+
+  const initial = (location.hash||'').replace('#','');
+  go(ROUTES.includes(initial) ? initial : 'home');
+</script>
+
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Nirvivad — My Account</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --ink:#151b2c; --ink-soft:#4d5670; --ink-faint:#8890a6;
+    --bg:#f2f4f9; --surface:#ffffff; --surface-sunken:#e9ecf5;
+    --border:#dce1ee; --border-strong:#c2cae0;
+    --blue:#1749b8; --blue-deep:#0d2f7a; --blue-soft:#e4ecfc;
+    --gold:#c9922e; --gold-soft:#f7ecd8;
+    --forest:#237a56; --forest-soft:#dff0e7;
+    --brick:#c0432a; --brick-soft:#fbe5df;
+    --shadow: 0 1px 2px rgba(13,29,74,.06), 0 6px 20px rgba(13,29,74,.08);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#eaedf7; --ink-soft:#b7bfd6; --ink-faint:#7d87a3;
+      --bg:#0c1220; --surface:#131b2f; --surface-sunken:#1a2440;
+      --border:#263252; --border-strong:#354672;
+      --blue:#5f8cf0; --blue-deep:#9db6f7; --blue-soft:#1b2748;
+      --gold:#e0ac53; --gold-soft:#332411;
+      --forest:#5fc79a; --forest-soft:#12291f;
+      --brick:#e5876c; --brick-soft:#331c15;
+      --shadow: 0 1px 2px rgba(0,0,0,.35), 0 8px 24px rgba(0,0,0,.4);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#eaedf7; --ink-soft:#b7bfd6; --ink-faint:#7d87a3;
+    --bg:#0c1220; --surface:#131b2f; --surface-sunken:#1a2440;
+    --border:#263252; --border-strong:#354672;
+    --blue:#5f8cf0; --blue-deep:#9db6f7; --blue-soft:#1b2748;
+    --gold:#e0ac53; --gold-soft:#332411;
+    --forest:#5fc79a; --forest-soft:#12291f;
+    --brick:#e5876c; --brick-soft:#331c15;
+    --shadow: 0 1px 2px rgba(0,0,0,.35), 0 8px 24px rgba(0,0,0,.4);
+    color-scheme: dark;
+  }
+  *{box-sizing:border-box;}
+  html,body{ height:100%; margin:0; }
+  img{ max-width:100%; } [hidden]{ display:none !important; }
+  body{ background:var(--bg); color:var(--ink); font-family:'Public Sans',system-ui,sans-serif; font-size:14px; line-height:1.55; }
+  h1,h2,h3{ font-family:'Fraunces',Georgia,serif; text-wrap:balance; margin:0; }
+  .mono{ font-family:'JetBrains Mono',ui-monospace,monospace; }
+  button{ font-family:inherit; }
+  a{ color:var(--blue); }
+  :focus-visible{ outline:2px solid var(--blue); outline-offset:2px; }
+  #app{ min-height:100%; display:flex; flex-direction:column; }
+
+  /* ---------- Login / OTP / role pick ---------- */
+  .auth-shell{ flex:1; display:flex; align-items:center; justify-content:center; padding:32px 20px; background: radial-gradient(1000px 420px at 50% -140px, var(--blue-soft), transparent 70%); }
+  .auth-card{ width:100%; max-width:400px; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:32px 30px; box-shadow:var(--shadow); }
+  .brand{ display:flex; align-items:center; gap:9px; font-family:'Fraunces',serif; font-weight:700; font-size:18px; justify-content:center; margin-bottom:20px; color:var(--ink); text-decoration:none; }
+  .brand .mark{ width:30px; height:30px; border-radius:8px; background:linear-gradient(155deg,#2e8fe0,var(--blue-deep)); display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif; font-weight:700; font-size:14px; color:#fff; }
+  .auth-card h1{ font-size:19px; font-weight:600; text-align:center; margin-bottom:6px; }
+  .auth-card .sub{ text-align:center; color:var(--ink-soft); font-size:12.5px; margin-bottom:22px; }
+  .field{ margin-bottom:14px; }
+  .field label{ display:block; font-size:12.5px; font-weight:600; margin-bottom:5px; }
+  .field input, .field select{ width:100%; border:1px solid var(--border-strong); background:var(--surface); color:var(--ink); border-radius:8px; padding:10px 12px; font-size:13.5px; font-family:inherit; }
+  .field input:focus, .field select:focus{ outline:2px solid var(--blue); outline-offset:1px; }
+  .otp-row{ display:flex; gap:8px; justify-content:center; margin-bottom:16px; }
+  .otp-row input{ width:42px; height:50px; text-align:center; font-size:19px; font-weight:700; border:1px solid var(--border-strong); border-radius:9px; background:var(--surface); color:var(--ink); }
+  .otp-row input:focus{ outline:2px solid var(--blue); outline-offset:1px; }
+  .btn{ display:inline-flex; align-items:center; justify-content:center; gap:6px; border-radius:9px; border:1px solid var(--border-strong); background:var(--surface); color:var(--ink); font-weight:600; font-size:13.5px; padding:10px 16px; cursor:pointer; text-decoration:none; }
+  .btn:hover{ background:var(--surface-sunken); }
+  .btn-primary{ background:var(--blue); border-color:var(--blue); color:#fff; }
+  .btn-primary:hover{ background:var(--blue-deep); border-color:var(--blue-deep); }
+  .btn-block{ width:100%; }
+  .btn-sm{ padding:6px 12px; font-size:12px; }
+  .auth-foot{ text-align:center; font-size:12.5px; color:var(--ink-faint); margin-top:14px; }
+  .auth-foot a{ font-weight:600; cursor:pointer; text-decoration:none; }
+  .back-link{ display:block; text-align:center; margin-top:16px; font-size:12px; color:var(--ink-faint); text-decoration:none; }
+  .back-link:hover{ color:var(--ink-soft); }
+
+  .role-pick-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:8px; }
+  @media (max-width:420px){ .role-pick-grid{ grid-template-columns:1fr; } }
+  .role-pick{ border:1px solid var(--border); border-radius:11px; padding:13px; cursor:pointer; text-align:left; background:var(--surface); }
+  .role-pick .ic{ font-size:18px; margin-bottom:5px; }
+  .role-pick .t{ font-weight:700; font-size:12.5px; }
+  .role-pick .d{ font-size:10.5px; color:var(--ink-faint); margin-top:2px; }
+  .role-pick:hover{ border-color:var(--blue); }
+  .role-pick.checked{ border-color:var(--blue); background:var(--blue-soft); }
+
+  /* ---------- App shell ---------- */
+  .topbar{ position:sticky; top:0; z-index:40; background:var(--blue-deep); color:#fff; padding:10px 18px; display:flex; align-items:center; gap:14px; box-shadow:var(--shadow); }
+  .topbar .brand{ margin:0; color:#fff; }
+  .topbar-spacer{ flex:1; }
+  .badge-verified{ display:flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; background:rgba(95,199,154,.18); border:1px solid rgba(95,199,154,.4); color:#bdedd6; padding:5px 9px; border-radius:999px; }
+  .badge-verified .dot{ width:6px; height:6px; border-radius:50%; background:#5fc79a; }
+  select.role-select{ appearance:none; background:rgba(255,255,255,.12); color:#fff; border:1px solid rgba(255,255,255,.24); border-radius:8px; padding:7px 12px; font-size:13px; font-weight:600; cursor:pointer; }
+  select.role-select option{ color:#111; }
+  .topbar .btn{ background:rgba(255,255,255,.12); border-color:rgba(255,255,255,.24); color:#fff; }
+  .topbar .btn:hover{ background:rgba(255,255,255,.2); }
+
+  .body-row{ flex:1; display:flex; min-height:0; }
+  .rail{ width:216px; flex-shrink:0; background:var(--surface); border-right:1px solid var(--border); padding:16px 10px; }
+  .rail-label{ font-size:10.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); padding:8px 10px 6px; }
+  .rail button.nav-item{ display:flex; align-items:center; gap:9px; width:100%; text-align:left; border:none; background:none; padding:9px 10px; border-radius:8px; font-size:13px; font-weight:600; color:var(--ink-soft); cursor:pointer; margin-bottom:2px; }
+  .rail button.nav-item:hover{ background:var(--surface-sunken); color:var(--ink); }
+  .rail button.nav-item.active{ background:var(--blue); color:#fff; }
+
+  main{ flex:1; padding:26px 28px 60px; overflow-y:auto; }
+  .container{ max-width:1080px; margin:0 auto; }
+  .page-head{ margin-bottom:20px; }
+  .page-head h1{ font-size:24px; font-weight:600; margin-bottom:4px; }
+  .page-head .sub{ color:var(--ink-soft); font-size:13px; }
+  .card{ background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px; box-shadow:var(--shadow); }
+  .empty{ text-align:center; padding:50px 20px; color:var(--ink-faint); }
+  .empty .ic{ font-size:30px; margin-bottom:10px; }
+
+  @media (max-width:760px){
+    .rail{ position:fixed; left:0; top:52px; bottom:0; z-index:30; transform:translateX(-100%); transition:transform .2s; }
+    .rail.open{ transform:none; }
+    main{ padding:18px 16px 50px; }
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+  const ROLES = [
+    {id:'owner', label:'Property Owner', icon:'🏠', desc:'List a disputed property', nav:[
+      {id:'dashboard', label:'Dashboard', icon:'▦'},
+      {id:'list', label:'List a Property', icon:'＋'},
+      {id:'action', label:'Action Required', icon:'⚑'},
+      {id:'invoices', label:'Invoices & Payments', icon:'₹'},
+    ]},
+    {id:'investor', label:'Buyer / Investor', icon:'🔎', desc:'Browse verified listings', nav:[
+      {id:'marketplace', label:'Marketplace', icon:'▦'},
+      {id:'shortlist', label:'Shortlisted', icon:'★'},
+      {id:'eois', label:'My EOIs', icon:'✉'},
+    ]},
+    {id:'professional', label:'Professional', icon:'⚖️', desc:'Lawyer, CA, Arbitrator, Broker', nav:[
+      {id:'queue', label:'Assigned Cases', icon:'▦'},
+      {id:'verification', label:'Credential Verification', icon:'✓'},
+    ]},
+  ];
+  const ROLE_LOOKUP = {}; ROLES.forEach(r=>ROLE_LOOKUP[r.id]=r);
+
+  let state = { screen:'login', authEmail:'', otp:['','','','','',''], pendingRole:null, role:null, view:null };
+
+  function render(){
+    const app = document.getElementById('app');
+    if(state.screen==='login'){ app.innerHTML = viewLogin(); return; }
+    if(state.screen==='otp'){ app.innerHTML = viewOtp(); return; }
+    if(state.screen==='rolepick'){ app.innerHTML = viewRolePick(); return; }
+    app.innerHTML = viewApp();
+    const fn = VIEW_FNS[state.view] || (()=>'<div class="empty"><div class="ic">▦</div>No content yet</div>');
+    document.getElementById('main').innerHTML = fn();
+  }
+
+  function viewLogin(){
+    return `
+      <div class="auth-shell">
+        <div class="auth-card">
+          <a class="brand" href="../index.html"><span class="mark">N</span>Nirvivad</a>
+          <h1>Log in or sign up</h1>
+          <div class="sub">We'll email you a one-time code — no password needed.</div>
+          <div class="field"><label>Email address</label><input type="email" id="emailInput" placeholder="you@example.com" value="${state.authEmail}"></div>
+          <button class="btn btn-primary btn-block" onclick="requestOtp()">Continue with email</button>
+          <div class="auth-foot">By continuing you agree to Nirvivad's Terms &amp; Privacy Policy.</div>
+          <a class="back-link" href="../index.html">← Back to nirvivad.example</a>
+        </div>
+      </div>
+    `;
+  }
+  function requestOtp(){
+    const v = document.getElementById('emailInput').value.trim();
+    state.authEmail = v || 'you@example.com';
+    state.screen = 'otp';
+    render();
+  }
+
+  function viewOtp(){
+    return `
+      <div class="auth-shell">
+        <div class="auth-card">
+          <a class="brand" href="../index.html"><span class="mark">N</span>Nirvivad</a>
+          <h1>Enter verification code</h1>
+          <div class="sub">6-digit code sent to <strong>${state.authEmail}</strong></div>
+          <div class="otp-row">
+            ${[0,1,2,3,4,5].map(i=>`<input maxlength="1" inputmode="numeric" id="otp${i}" oninput="otpMove(${i},this)">`).join('')}
+          </div>
+          <button class="btn btn-primary btn-block" onclick="verifyOtp()">Verify &amp; continue</button>
+          <div class="auth-foot">Didn't get a code? <a onclick="requestOtp()">Resend</a></div>
+        </div>
+      </div>
+    `;
+  }
+  function otpMove(i,node){
+    state.otp[i] = node.value.replace(/[^0-9]/g,'').slice(0,1);
+    if(state.otp[i] && i<5) document.getElementById('otp'+(i+1)).focus();
+  }
+  function verifyOtp(){
+    if(state.role){ state.screen = 'app'; render(); return; }
+    state.screen = 'rolepick';
+    render();
+  }
+
+  function viewRolePick(){
+    return `
+      <div class="auth-shell">
+        <div class="auth-card" style="max-width:440px;">
+          <a class="brand" href="../index.html"><span class="mark">N</span>Nirvivad</a>
+          <h1>How will you use Nirvivad?</h1>
+          <div class="sub">You can activate additional roles from your account later.</div>
+          <div class="role-pick-grid">
+            ${ROLES.map(r=>`
+              <div class="role-pick ${state.pendingRole===r.id?'checked':''}" onclick="pickRole('${r.id}')">
+                <div class="ic">${r.icon}</div><div class="t">${r.label}</div><div class="d">${r.desc}</div>
+              </div>`).join('')}
+          </div>
+          <button class="btn btn-primary btn-block" style="margin-top:8px;" ${state.pendingRole?'':'disabled'} onclick="confirmRole()">Continue</button>
+        </div>
+      </div>
+    `;
+  }
+  function pickRole(id){ state.pendingRole = id; render(); }
+  function confirmRole(){
+    state.role = state.pendingRole;
+    state.view = ROLE_LOOKUP[state.role].nav[0].id;
+    state.screen = 'app';
+    render();
+  }
+
+  function viewApp(){
+    const r = ROLE_LOOKUP[state.role];
+    return `
+      <div style="min-height:100%; display:flex; flex-direction:column;">
+        <div class="topbar">
+          <a class="brand" href="../index.html"><span class="mark">N</span>Nirvivad</a>
+          <div class="topbar-spacer"></div>
+          <div class="badge-verified"><span class="dot"></span>Verified</div>
+          <select class="role-select" onchange="switchRole(this.value)">
+            ${ROLES.map(x=>`<option value="${x.id}" ${x.id===state.role?'selected':''}>${x.icon} ${x.label}</option>`).join('')}
+          </select>
+          <button class="btn btn-sm" onclick="logout()">Log out</button>
+        </div>
+        <div class="body-row">
+          <nav class="rail">
+            <div class="rail-label">${r.label}</div>
+            ${r.nav.map(n=>`<button class="nav-item ${n.id===state.view?'active':''}" onclick="setView('${n.id}')"><span>${n.icon}</span>${n.label}</button>`).join('')}
+          </nav>
+          <main><div class="container" id="main"></div></main>
+        </div>
+      </div>
+    `;
+  }
+  function switchRole(role){ state.role = role; state.view = ROLE_LOOKUP[role].nav[0].id; render(); }
+  function setView(v){ state.view = v; render(); }
+  function logout(){ state = { screen:'login', authEmail:'', otp:['','','','','',''], pendingRole:null, role:null, view:null }; render(); }
+
+  const VIEW_FNS = {
+    dashboard: ()=>`
+      <div class="page-head"><h1>Welcome back</h1><div class="sub">Track your listed property and respond to action items here.</div></div>
+      <div class="card empty"><div class="ic">🏠</div>You haven't listed a property yet — placeholder dashboard.</div>
+    `,
+    list: ()=>`
+      <div class="page-head"><h1>List a Property</h1><div class="sub">Quick intake form — placeholder, build pending.</div></div>
+      <div class="card empty"><div class="ic">＋</div>Form placeholder.</div>
+    `,
+    action: ()=>`
+      <div class="page-head"><h1>Action Required</h1><div class="sub">Items that need your response.</div></div>
+      <div class="card empty"><div class="ic">✅</div>No pending actions — placeholder view.</div>
+    `,
+    invoices: ()=>`
+      <div class="page-head"><h1>Invoices &amp; Payments</h1></div>
+      <div class="card empty"><div class="ic">₹</div>No invoices yet — placeholder view.</div>
+    `,
+    marketplace: ()=>`
+      <div class="page-head"><h1>Investor Marketplace</h1><div class="sub">Browse verified listings.</div></div>
+      <div class="card empty"><div class="ic">🔎</div>Marketplace placeholder — build pending.</div>
+    `,
+    shortlist: ()=>`
+      <div class="page-head"><h1>Shortlisted</h1></div>
+      <div class="card empty"><div class="ic">★</div>Nothing shortlisted yet — placeholder view.</div>
+    `,
+    eois: ()=>`
+      <div class="page-head"><h1>My Expressions of Interest</h1></div>
+      <div class="card empty"><div class="ic">✉</div>No EOIs submitted yet — placeholder view.</div>
+    `,
+    queue: ()=>`
+      <div class="page-head"><h1>Assigned Cases</h1><div class="sub">Cases routed to you for review.</div></div>
+      <div class="card empty"><div class="ic">⚖️</div>No cases assigned yet — placeholder view.</div>
+    `,
+    verification: ()=>`
+      <div class="page-head"><h1>Credential Verification</h1><div class="sub">Submit your professional credentials for Admin review.</div></div>
+      <div class="card empty"><div class="ic">✓</div>Verification form placeholder — build pending.</div>
+    `,
+  };
+
+  render();
+</script>
+</body>
+</html>
