@@ -136,6 +136,7 @@ test('permission assignments cannot bypass role ceiling and restricted resources
   await signIn(store);
   assert.throws(() => store.savePermissions('user-3', { users: { view: true } }), /hierarchy/);
   assert.throws(() => store.savePermissions('user-2', { users: { permissions: true } }), /hierarchy/);
+  assert.throws(() => store.savePermissions('user-2', { users: { assign: true } }), /hierarchy/);
   assert.throws(() => store.savePermissions('user-2', { cms: { edit: true } }), /hierarchy/);
   assert.throws(() => store.savePermissions('user-1', {}), /always full/);
   store.savePermissions('user-2', { users: { create: false, edit: false, status: false, delete: false }, subscriptions: { edit: true } });
@@ -236,4 +237,18 @@ test('persistence failure never reports a successful mutation', async () => {
   assert.equal(localStorage.getItem(store.storageKey), before);
   localStorage.setItem = original;
   assert.equal(store.listMaster('city').length, 7);
+});
+
+
+test('denying View disables mutation overrides for the same resource', async () => {
+  const { store } = await environment();
+  await signIn(store);
+  store.savePermissions('user-3', { land: { view: false, create: true, edit: true }, subscriptions: { view: false, edit: true } });
+  store.logout();
+  await signIn(store, 'employee@nirvivad.example');
+  assert.equal(store.can('land', 'create'), false);
+  assert.equal(store.can('land', 'edit'), false);
+  assert.equal(store.can('subscriptions', 'edit'), false);
+  assert.throws(() => store.saveMaster('land', { name: 'Hidden land', code: 'HIDDEN' }), /permission/);
+  assert.throws(() => store.savePlan({ description: 'Hidden edit' }, 'plan-1'), /permission/);
 });

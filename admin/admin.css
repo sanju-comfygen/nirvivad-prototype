@@ -475,3 +475,71 @@ table { border-collapse: collapse; }
   html { scroll-behavior: auto; }
   *, *:before, *:after { animation: none !important; transition: none !important; }
 }
+
+/* Integrated screen components share the public website's mark and wordmark. */
+.brand { display: inline-flex; align-items: center; gap: 9px; color: var(--primary); text-decoration: none; flex: none; }
+.brand > img, .sidebar-brand .brand > img, .login-mark .brand > img, .login-card > .brand > img { width: 39px; height: 44px; flex: none; object-fit: contain; }
+.brand > span { font: 30px/1 Georgia, serif; letter-spacing: -1px; }
+.brand small { display: block; font: 6.5px/1.4 Arial, sans-serif; letter-spacing: 1.35px; color: var(--muted); margin-top: 8px; }
+.login-mark { width: auto; justify-content: flex-start; padding: 14px 18px; }
+.stat-label, .stat-value, .stat-note { display: block; }
+.quick-action { display: grid; grid-template-columns: 34px minmax(0, 1fr) 18px; gap: 13px; align-items: start; }
+.quick-action > .icon { width: 17px; height: 17px; margin-top: 5px; }
+.quick-action .quick-icon { margin: 0; }
+.form-card.card, .detail-card.card, .cms-preview.card { padding: 0; }
+.form-card .form-actions { padding: 22px 27px; margin: 0; border-top: 1px solid var(--line); }
+.form-card .form-actions .button { flex-shrink: 0; }
+.detail-card .card-header h2 { margin: 0; }
+.detail-card .card-body > .heading-actions { margin-top: 24px; }
+.role-summary { overflow-wrap: anywhere; }
+.role-summary > strong { display: block; font-size: 13px; margin-block: 18px 10px; }
+.role-summary > p { color: var(--muted); font-size: 12px; }
+.detail-card .card-body > .button + .button { margin-top: 12px; }
+.person-meta span, .data-table td > small, .manager-name { display: block; }
+.data-table td > small { margin-top: 4px; }
+.hierarchy-list { padding: 12px 24px; }
+.hierarchy-item { margin-left: calc(var(--level, 0) * 22px); padding: 16px 8px; }
+.hierarchy-item > div { min-width: 0; overflow-wrap: anywhere; }
+.manager-name { font-size: 11px; color: var(--muted); }
+.master-summary { padding: 0; font-size: 12px; white-space: nowrap; }
+.plan-count > span { font: 13px/1.5 Arial, sans-serif; color: var(--muted); }
+.plan-price > span { color: var(--muted); font-size: 12px; font-weight: 400; }
+.feature-list li { display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px; border-bottom: 1px solid #edf2f9; padding-bottom: 9px; }
+.feature-list li strong { font-weight: 500; color: var(--ink); }
+.cms-card > h2 { clear: both; font-size: 25px; margin: 22px 0 15px; }
+.cms-card > .pill { float: right; }
+.editor-toolbar > input { min-width: 140px; flex: 1; padding: 8px; border: 1px solid var(--line); border-radius: 4px; font-size: 12px; }
+.rich-editor { overflow-wrap: anywhere; }
+.session-note { display: flex; gap: 11px; align-items: flex-start; margin-bottom: 10px; }
+.session-note > .icon { margin-top: 3px; }
+.session-note span { display: block; }
+.sidebar-bottom > small { display: block; margin: 12px; font-size: 10px; color: #c8ddf5; }
+.admin-footer { padding: 18px 36px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 15px; color: var(--muted); font-size: 11px; }
+.avatar.large { width: 65px; height: 65px; font-size: 21px; }
+.login-story > small { align-self: flex-start; }
+.login-story .login-points > div { display: flex; align-items: center; gap: 13px; }
+.login-story .login-points .icon { width: 19px; height: 19px; }
+.demo-account > span { min-width: 0; }
+.demo-account strong, .demo-account code { display: block; }
+.demo-account code { overflow-wrap: anywhere; font-size: 11px; }
+.login-card > .eyebrow { color: var(--primary); font-size: 11px; margin-bottom: 12px; }
+@media (max-width: 760px) {
+  .login-card > .brand > img { width: 39px; height: 44px; }
+  .form-card .form-actions { padding: 18px; flex-wrap: wrap; }
+  .hierarchy-list { padding-inline: 14px; }
+  .hierarchy-item { margin-left: calc(var(--level, 0) * 12px); gap: 8px; }
+  .hierarchy-item .pill { font-size: 10px; }
+  .admin-footer { padding: 18px; }
+  .quick-action { grid-template-columns: 28px minmax(0,1fr); gap: 10px; }
+  .quick-action > .icon { display: none; }
+}
+.pill.draft { color: #355f91; background: #f0f5fc; border-color: #b7cfe9; border-style: dashed; }
+button.demo-account { width: calc(100% - 32px); border: 0; border-bottom: 1px solid #e3ebf6; background: white; text-align: left; color: var(--ink); }
+button.demo-account:hover { background: #f5f8fc; }
+.login-story > div > p:not(.login-kicker) { max-width: 405px; color: #d0e1f6; font-size: 13px; line-height: 1.9; }
+.login-story > small { margin-top: 48px; color: #c8ddf5; font-size: 11px; }
+.loading-screen { flex-direction: column; padding: 30px; text-align: center; }
+.prose a, .cms-published-content a { text-decoration: underline; text-underline-offset: 3px; }
+
+/* Keep role and status labels intact inside horizontally scrollable tables. */
+.data-table .pill { max-width: none; flex-shrink: 0; }

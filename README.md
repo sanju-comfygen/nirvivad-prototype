@@ -1,4 +1,4 @@
-# Nirvivad public website prototype
+# Nirvivad website and Administration prototype
 
 Open `index.html` directly, or serve this folder locally:
 
@@ -11,15 +11,15 @@ Then visit `http://127.0.0.1:8000`. There are no build dependencies or external 
 
 ## Public website
 
-- Home: original property imagery, branded hero, search, featured opportunities, process, audiences, About, plans and FAQs.
-- Explore properties: city/type/opportunity/text filters, area sorting, saved properties, empty states and accessible detail dialogs.
+- Home: original property imagery, branded hero, private-discovery invitation, process, audiences, About, plans and FAQs.
+- Explore properties: anonymous visitors see the login gate; verified customers browse limited, approved summaries in the customer console.
 - How it works: six steps and privacy boundaries.
 - Plans: proposed one-property and five-property annual plans with a comparison table.
 - About: platform story, principles and the new logo concept.
 - Contact: validated enquiry preparation and local text-file download. **No enquiry is sent.**
-- Privacy, terms and payment information: clearly labelled preview content.
+- Privacy, terms and payment information: preview content until a policy is published through Administration.
 
-Navigation uses URL hashes and supports direct links and browser history. Existing `user/index.html`, `admin/index.html` and `nirvivad-clickable-prototype/index.html` remain separate and unchanged.
+Navigation uses URL hashes and supports direct links and browser history. The [Customer Console](user/index.html) handles mobile OTP, Owner drafts/submissions and Buyer enquiries. See [its review guide](user/README.md). The [Administration Panel](admin/index.html) provides user, master data, subscription and policy management. See [Administration setup and workflows](admin/README.md). The earlier `user/index.html` demo has been replaced by the connected customer prototype. `nirvivad-clickable-prototype/index.html` remains a separate legacy demo.
 
 ## Editing
 
@@ -33,15 +33,15 @@ Navigation uses URL hashes and supports direct links and browser history. Existi
 | `assets/nirvivad-logo.svg` | Standalone logo with wordmark and tagline |
 | `assets/IMAGE_PROMPTS.md` | Original image prompts, generation method and asset provenance |
 
-This is an editable static public site, **not a connected CMS**. A CMS editor and administration workflows are later work. The About title is trusted local HTML; other content records are escaped when rendered. Do not connect untrusted CMS HTML without sanitisation.
+This is a static browser prototype. Administration includes a local CMS editor: published policies appear on the public Terms, Privacy and Payment pages in the same browser and origin. Drafts preserve the last published version. `assets/cms-content.js` reads only the published projection and sanitises its HTML. There is no production backend or shared database.
 
 ## Content boundaries
 
-Properties and review labels are examples, not live inventory. All images are generated representative scenes, not photographs of real listed properties or actual staff. There are no invented customer testimonials, live transaction metrics or membership prices.
+Customer console listings are illustrative examples, not live inventory. All images are generated representative scenes, not photographs of real listed properties or actual staff. There are no invented customer testimonials, live transaction metrics or membership prices.
 
 Plan counts and duration come from `Client-Side-Docs/Nirvivad work (1) (1).xlsx`. Plan 1 benefits are labelled proposed. Plan 2's unspecified benefits remain unconfirmed. The site does not resolve the outstanding payment-timing differences between the existing proposal and detailed workflow prototype.
 
-The contact form keeps its prepared text in memory only and never transmits it. Editing the form invalidates a previously prepared download. Saved example property IDs use browser local storage; saving still works for the current visit if storage is unavailable.
+The contact form keeps its prepared text in memory only and never transmits it. Editing the form invalidates a previously prepared download. Owner and Buyer records in the second module use browser storage; see the customer review guide for its limits.
 
 ## Design
 
@@ -52,8 +52,18 @@ Primary blue `#1e4f91`, deep blue `#163d72`, accent blue `#3b82c4`, muted slate 
 - JavaScript syntax checked for both public-site scripts.
 - Headless Chrome: all nine public routes render one primary heading, without horizontal overflow at desktop and 390px mobile widths.
 - Homepage also checked at 320px, 768px and 1024px.
-- Search transfers selected category to the catalogue; reset, saved filter, property dialog, empty state, plan-prefilled enquiries, form validation and mobile navigation checked.
+- The former public catalogue checks applied before the second module changed property access. Current customer and Admin browser checks are listed in their module guides.
 - All homepage assets loaded; no failing asset requests or application runtime exceptions in the completed browser run.
 - Desktop and mobile screenshots inspected. Contact page inspected separately.
 
 These are prototype checks, not a production accessibility, security or performance certification.
+
+
+## Administration verification — 29 September 2026
+
+The Administration checks cover 23 routes at desktop and mobile widths, user hierarchy and permission boundaries, CRUD operations, profile/password workflows, and CMS publication to the public site. Run the repeatable checks using the commands in [admin/README.md](admin/README.md).
+
+
+## Property Owner and Buyer / Investor phase — 29 September 2026
+
+The customer console and Administration request queues now share a browser-local workflow. Anonymous public routes contain no listing cards or search results. The [second-module resource review](../Reviewed/Second_Module_Resource_Analysis.md) records source decisions and unresolved production integrations. See [customer setup and checks](user/README.md).

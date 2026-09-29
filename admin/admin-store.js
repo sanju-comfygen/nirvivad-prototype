@@ -148,8 +148,9 @@
       if (!user || !Object.hasOwn(permissionResources, resource) || !permissionResources[resource].actions.includes(action)) return false;
       if (user.role === 'superadmin') return true;
       if (resource === 'cms') return false;
+      if (action !== 'view' && !canFor(user, resource, 'view')) return false;
       if (resource === 'users') {
-        if (user.role !== 'subadmin' || !['view', 'create', 'edit', 'delete', 'status', 'assign'].includes(action)) return false;
+        if (user.role !== 'subadmin' || !['view', 'create', 'edit', 'delete', 'status'].includes(action)) return false;
         return user.permissions?.[resource]?.[action] ?? true;
       }
       return user.permissions?.[resource]?.[action] ?? (action === 'view');
@@ -190,7 +191,7 @@
         normalized[resource] = {};
         for (const [action, value] of Object.entries(actions)) {
           if (!permissionResources[resource].actions.includes(action) || typeof value !== 'boolean') fail('Unknown permission action or invalid permission value.');
-          if (value && (resource === 'cms' || (resource === 'users' && (role !== 'subadmin' || ['permissions'].includes(action))))) fail('These permissions cannot exceed the user’s role hierarchy.');
+          if (value && (resource === 'cms' || (resource === 'users' && (role !== 'subadmin' || ['assign', 'permissions'].includes(action))))) fail('These permissions cannot exceed the user’s role hierarchy.');
           normalized[resource][action] = value;
         }
       }
