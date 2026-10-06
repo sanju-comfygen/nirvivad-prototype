@@ -140,3 +140,5 @@ window.addEventListener('hashchange',()=>route());
 window.addEventListener('storage',event=>{if(event.key===window.NirvivadCMS?.storageKey&&['terms','privacy','refund'].includes(currentPage))route(true);});
 $('#copyright-year').textContent=new Date().getFullYear();
 route(true);
+
+window.addEventListener('nirvivad-auth-changed',consoleLinks);

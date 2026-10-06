@@ -19,7 +19,7 @@ Then visit `http://127.0.0.1:8000`. There are no build dependencies or external 
 - Contact: validated enquiry preparation and local text-file download. **No enquiry is sent.**
 - Privacy, terms and payment information: preview content until a policy is published through Administration.
 
-Navigation uses URL hashes and supports direct links and browser history. The [Customer Console](user/index.html) handles mobile OTP, Owner drafts/submissions and Buyer enquiries. See [its review guide](user/README.md). The [Administration Panel](admin/index.html) provides user, master data, subscription and policy management. See [Administration setup and workflows](admin/README.md). The earlier `user/index.html` demo has been replaced by the connected customer prototype. `nirvivad-clickable-prototype/index.html` remains a separate legacy demo.
+Navigation uses URL hashes and supports direct links and browser history. The [Customer Console](user/index.html) provides one shared login/signup/OTP flow, default Buyer registration, independent role KYC, Owner drafts/submissions and Buyer enquiries. See [its review guide](user/README.md). The [Administration Panel](admin/index.html) provides user, master data, subscription and policy management. See [Administration setup and workflows](admin/README.md). The earlier `user/index.html` demo has been replaced by the connected customer prototype. `nirvivad-clickable-prototype/index.html` remains a separate legacy demo.
 
 ## Editing
 

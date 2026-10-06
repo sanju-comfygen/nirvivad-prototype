@@ -75,3 +75,15 @@ node admin/tests/browser.cjs
 The service suite checks authentication, hierarchy, role boundaries, validation, permissions, plans, CMS sanitisation, session invalidation, storage failures and tab conflicts. The browser suite requires Node 22+ and Google Chrome (`CHROME_BIN` can override the executable). It starts an isolated local server and temporary Chrome profile, exercises 23 routes at 1440px and 390px, checks CRUD and role-specific flows, and writes screenshots/results to a temporary directory printed on completion. It does not change your normal browser’s demo data.
 
 Implementation: `admin-store.js` contains data operations and validation; `admin-ui.js` contains screens and navigation; `admin.css` provides responsive styling. Public CMS rendering lives in `../assets/cms-content.js`.
+
+## Customer accounts and professional review — 6 October 2026
+
+**Customer accounts** is a Super Admin-only prototype page, separate from the internal staff directory. It shows each customer's first role, later roles, shared basic KYC status, and Lawyer/CA profile status. Customer detail pages display submitted registration details and document names. Super Admin can approve or return a submitted professional profile with a reason. Only an approved Lawyer or CA profile opens that professional dashboard in the customer console. This is a browser-local approval simulation; credential files are not uploaded or independently verified.
+
+**Seeded review examples:** Customer accounts includes **Demo Lawyer** (`9000000191`) and **Demo Chartered Accountant** (`9000000192`). Both have masked basic KYC and submitted professional profiles with fictional credential numbers and document names. Open each customer to inspect or approve the sample profile. The seed is idempotent and also appears in existing browser-local prototype stores.
+
+The **Customer accounts** directory now has role and review-status filters. Choose **Property Owners**, **Buyers / Investors**, **Lawyers**, or **Chartered Accountants** to see customers who hold that role, including people who joined under another primary role and added the professional role later. Combine this with **Awaiting review**, **Approved**, or **Returned for changes**. The search box matches customer name, mobile, email, role and professional registration number. Use **Reset** to clear the role, review status, and search together. Review status applies to professional roles; it is disabled for Owner and Buyer lists.
+
+## Prototype summary page
+
+Administration navigation includes a read-only **Prototype summary** page for every staff role. It records the implemented account, role, KYC, Property Owner, Lawyer/CA, Buyer enquiry, audit, and Administration flows, along with current prototype boundaries. The same handoff record is kept in [PROTOTYPE_SUMMARY.md](PROTOTYPE_SUMMARY.md).
