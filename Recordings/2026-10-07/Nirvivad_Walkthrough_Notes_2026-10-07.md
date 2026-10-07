@@ -29,6 +29,8 @@ This client-review edition uses live screenshots from an isolated browser profil
 23. **Broker enquiry: follow-up round** — A new Broker assignment after a submitted update creates Round 2, preserving the earlier response.
 24. **Enquiry activity trail** — The Buyer and team actions, market assignments, updates and follow-up rounds are audited.
 
+25. **Contact Us: linked to mobile** — Contact Us requires mobile, allows optional email, and lets a verified customer track the enquiry status set by Administration.
+
 ## Client decisions to confirm
 
 - Final role credentials, required documents and report fields.

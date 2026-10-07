@@ -16,7 +16,7 @@ Then visit `http://127.0.0.1:8000`. There are no build dependencies or external 
 - How it works: six steps and privacy boundaries.
 - Plans: proposed one-property and five-property annual plans with a comparison table.
 - About: platform story, principles and the new logo concept.
-- Contact: validated enquiry preparation and local text-file download. **No enquiry is sent.**
+- Contact: mobile number is required and email is optional. Submitted website enquiries appear in the browser-local Administration inbox and in the verified mobile account’s console, with a reference shown after submission.
 - Privacy, terms and payment information: preview content until a policy is published through Administration.
 - [Prototype recordings](recordings.html): dated walkthrough folders with videos, PDF guides, slide gallery, notes and shareable packs.
 
@@ -29,6 +29,7 @@ Navigation uses URL hashes and supports direct links and browser history. The [C
 | `index.html` | Shared document, navigation and footer |
 | `assets/website-content.js` | Example properties, plan data, FAQs, process and About copy |
 | `assets/website.js` | Public page templates, navigation and interactions |
+| `assets/contact-store.js` | Browser-local Contact Us submissions shared with Administration and matched to customer accounts by verified mobile number |
 | `assets/website.css` | Responsive design and design tokens |
 | `recordings.html` and `assets/recordings.css` | Date-wise walkthrough library and responsive layout |
 | `assets/nirvivad-mark.svg` | Standalone scalable N/roof mark and favicon |
@@ -43,7 +44,7 @@ Customer console listings are illustrative examples, not live inventory. All ima
 
 Plan counts and duration come from `Client-Side-Docs/Nirvivad work (1) (1).xlsx`. Plan 1 benefits are labelled proposed. Plan 2's unspecified benefits remain unconfirmed. The site does not resolve the outstanding payment-timing differences between the existing proposal and detailed workflow prototype.
 
-The contact form keeps its prepared text in memory only and never transmits it. Editing the form invalidates a previously prepared download. Owner and Buyer records in the second module use browser storage; see the customer review guide for its limits.
+Contact Us submissions appear under **Contact enquiries** in Administration and under **Contact enquiries** in the customer console after login with the submitted mobile number. A signed-in customer’s verified mobile is prefilled on the form. These records are stored in local browser storage only, so all views need the same browser and origin; there is no server delivery, cross-device sharing, email or notification integration. Owner and Buyer records in the second module also use browser storage; see the customer review guide for its limits.
 
 ## Design
 
