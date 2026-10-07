@@ -1,24 +1,10 @@
-# Nirvivad prototype walkthroughs
+# Nirvivad prototype walkthrough recordings
 
-## Full team walkthrough
+Browse the [website recordings page](../recordings.html), or open a dated folder below.
 
-- [Watch the full role-by-role video](Nirvivad_Full_Prototype_Walkthrough_2026-10-06.webm) — 3 minutes 15 seconds, captioned, 1280×720 WebM, no audio.
-- [Review the 16-page PDF slide guide](Nirvivad_Prototype_Flow_Guide_2026-10-06.pdf) — key screens and notes for a quick team discussion.
-- [Video cover image](Nirvivad_Full_Walkthrough_Cover.png).
-
-The video begins with Administration, then shows the Property Owner, team Property review, Lawyer and CA, Buyer enquiry, and the handoff summary. It includes scrolled portions of long forms, professional reports, and both audit trails.
-
-| Chapter | Start time |
+| Date | Contents |
 | --- | --- |
-| Administration | 00:00 |
-| Property Owner | 00:30 |
-| Team Property Review | 01:02 |
-| Lawyer and CA | 01:42 |
-| Buyer Enquiry | 02:32 |
-| Handoff | 03:04 |
+| [7 October 2026](2026-10-07/) | Clear 1600×1000 full and quick videos, 26-page PDF, slide gallery, notes, cover, team ZIP and recording scripts |
+| [6 October 2026](2026-10-06/) | Earlier full and quick videos, 16-page PDF, covers and team ZIP |
 
-## Quick overview
-
-[Watch the 68-second quick walkthrough](Nirvivad_Prototype_Walkthrough_2026-10-06.webm).
-
-Both videos use isolated sample accounts and sample property data captured from the running browser prototype. They are captioned sequences of live prototype screens, without narration. No real customer records were used or changed.
+Each collection stays in its own `YYYY-MM-DD` folder. The website page links directly to the files in these folders. The team ZIP files remain available for sharing.
