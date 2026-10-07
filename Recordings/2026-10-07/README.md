@@ -2,9 +2,11 @@
 
 - [Full role-by-role video](Nirvivad_Full_Prototype_Walkthrough_2026-10-07.webm) — captioned, 1600×1000, about 2 minutes 40 seconds.
 - [Quick overview](Nirvivad_Prototype_Walkthrough_2026-10-07.webm) — captioned, 1600×1000, about one minute.
-- [26-page PDF flow guide](Nirvivad_Prototype_Flow_Guide_2026-10-07.pdf).
+- [27-page PDF flow guide](Nirvivad_Prototype_Flow_Guide_2026-10-07.pdf).
 - [Slide gallery](slides-2026-10-07.html) and [browser-friendly notes](notes-2026-10-07.html).
 - [Downloadable team pack](Nirvivad_Team_Walkthrough_Pack_2026-10-07.zip).
+
+The PDF, gallery and notes include one short Contact Us slide showing mobile-linked customer enquiries and Administration status. The videos retain the earlier role and property flow recording.
 
 This edition covers Administration, Property Owner, multiple scoped Lawyer assignments, CA and other professional roles, selective sharing, follow-up rounds, Buyer enquiry and both activity trails. The videos use sample accounts and records and have no narration.
 

@@ -36,3 +36,7 @@ Users and reporting hierarchy, customer role and review filters, six master-data
 ## Boundaries for the next phase
 
 The demo OTP, browser storage, sample attachment previews, and current audit trail are not production services. Production work needs server-side authentication and authorization, a database, document storage, durable audit logging, real verification and payment integration. The FRD's final mandatory property document matrix and role-specific report templates still need client confirmation.
+
+## Website Contact Us inbox
+
+Contact Us submissions require a mobile number; email is optional. They are saved in browser-local storage. Administration has a Contact enquiries queue and detail page with status changes. Customers who verify the submitted mobile can view their own messages and statuses from any console role. The data is visible only when the pages use the same browser and site origin; production delivery and shared storage are not connected.

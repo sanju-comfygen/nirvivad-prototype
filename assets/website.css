@@ -16,3 +16,6 @@
 .cms-published-content ul, .cms-published-content ol { color: var(--muted); padding-left: 24px; }
 
 .access-panel{display:flex;align-items:center;justify-content:space-between;gap:26px;padding:30px;background:#edf4fd;border:1px solid #c8d9ed;border-radius:10px;margin-bottom:40px}.access-panel h2{font:29px Georgia,serif;color:#163d72;margin:0 0 8px}.access-panel p{margin:0;color:#566b85;max-width:660px}.access-panel .button{white-space:nowrap}@media(max-width:700px){.access-panel{display:block}.access-panel .button{margin-top:18px;white-space:normal}}
+
+/* Contact form submission feedback */
+.contact-form-card .form-error{color:#9a332b;background:#fff2ef;border:1px solid #e8b5ad;border-radius:5px;padding:12px 14px;font-size:12px;line-height:1.5;margin:14px 0}

@@ -553,3 +553,10 @@ button.demo-account:hover { background: #f5f8fc; }
 .market-support-block{margin-top:20px;padding:20px;border:1px solid #dce7f2;border-radius:10px;background:#fbfdff}.market-support-block h3{margin:0 0 12px}.market-assignment-form{display:grid;gap:16px;margin-top:18px}.market-assignment-form>label{display:grid;gap:8px;font-weight:700}.market-assignment-form select{max-width:440px;border:1px solid #b9cbe1;border-radius:7px;padding:10px}.market-fieldset{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;border:1px solid #dbe7f2;border-radius:9px;padding:16px}.market-fieldset legend{font-weight:700}.market-fieldset label{display:flex;gap:8px;align-items:flex-start}.market-assignment-form>.button{justify-self:start}@media(max-width:600px){.market-fieldset{grid-template-columns:1fr}}
 .assigned-review{padding:15px;border:1px solid #dbe7f2;border-radius:9px;background:#f9fcff;margin:14px 0}.assigned-review h3,.assigned-review h4{margin:0 0 10px}.assigned-review p{margin:7px 0}
 .report-share-option{border:1px solid #dbe7f2;border-radius:8px;background:#fbfdff;padding:12px;margin:10px 0}.report-share-option strong{display:block;margin-bottom:8px}.report-share-option label{display:flex;gap:8px;align-items:flex-start;margin:7px 0}
+
+/* Website Contact Us inbox */
+.contact-message{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.7;background:#f6f9fd;border:1px solid #dce7f3;border-radius:8px;padding:18px;margin:12px 0 0}
+.contact-history{list-style:none;padding:0;margin:12px 0 0;border-left:2px solid #dce7f3}
+.contact-history li{position:relative;padding:0 0 20px 18px;display:grid;gap:5px;font-size:13px}
+.contact-history li:before{content:'';position:absolute;left:-6px;top:3px;width:9px;height:9px;border-radius:50%;background:#3b82c4}
+.contact-history li span{color:#657b95;font-size:12px}

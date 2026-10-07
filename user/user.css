@@ -46,3 +46,5 @@
 #case-report-form input[type=file]{width:100%;box-sizing:border-box;border:1px solid #b9cbe1;border-radius:9px;padding:10px;background:#fff;color:#18324f}
 .plan-options{display:grid;gap:12px;margin:20px 0}.plan-options label{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid #c9dbed;border-radius:9px;cursor:pointer}.plan-options label:has(input:checked){background:#edf5ff;border-color:#1e4f91}.plan-options input{width:auto;margin:0}.plan-options span{display:grid;gap:4px}.plan-options small{font-weight:400;color:#607994}
 .shared-report,.shared-note{padding:14px;border:1px solid #dbe7f2;border-radius:9px;background:#fbfdff;margin:14px 0}.shared-report h3{margin:0 0 10px}.shared-report p{margin:8px 0}
+
+.contact-enquiry-message{white-space:pre-wrap;overflow-wrap:anywhere;background:#f6f9fd;border:1px solid #dce7f3;border-radius:8px;padding:18px;line-height:1.7;margin:20px 0}
