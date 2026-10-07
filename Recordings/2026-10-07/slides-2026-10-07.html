@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>7 October 2026 slides — Nirvivad</title>
+<link rel="icon" href="../../assets/nirvivad-mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../assets/recordings.css">
+<style>
+.gallery-intro{padding:42px 0 22px}.gallery-intro h1{font:clamp(32px,5vw,48px) Georgia,serif;margin:12px 0;color:#153b71}.gallery-intro p{color:#617691;line-height:1.6}
+.slide-viewer{max-width:1100px;margin:0 auto 65px}.slide-image-link{display:block;background:#fff;border:1px solid #d9e5f2;border-radius:16px;padding:12px;box-shadow:0 8px 20px #203d6710}.slide-image-link:hover,.slide-image-link:focus-visible{border-color:#3b82c4;outline:2px solid #3b82c4}.slide-image-link img{display:block;width:100%;aspect-ratio:16/9;object-fit:contain;background:#f5f8fc;border-radius:8px}.slide-controls{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:20px 2px}.slide-button{background:#1e4f91;color:#fff;border:1px solid #1e4f91;border-radius:8px;min-height:44px;padding:10px 17px;font:700 13px Arial,Helvetica,sans-serif;cursor:pointer}.slide-button:hover:not(:disabled){background:#163d72}.slide-button:focus-visible{outline:3px solid #3b82c4;outline-offset:3px}.slide-button:disabled{opacity:.43;cursor:not-allowed}.slide-status{text-align:center;color:#183c70;font-size:13px;line-height:1.5}.slide-status strong{display:block;font-size:16px}.slide-help{font-size:12px;color:#6a7c94;text-align:center;margin:0}
+@media(max-width:650px){.gallery-intro{padding:30px 0 17px}.slide-controls{gap:8px}.slide-button{padding:9px 10px;font-size:11px}.slide-status{font-size:11px}.slide-status strong{font-size:13px}}
+</style>
+</head>
+<body>
+<header class="recordings-header"><div class="recordings-wrap header-row"><a class="brand" href="../../index.html#home"><img src="../../assets/nirvivad-mark.svg" width="38" height="42" alt=""><span>Nirvivad<small>PROPERTY. WITH CLARITY.</small></span></a><a class="back-link" href="../../recordings.html">← All recordings</a></div></header>
+<main class="recordings-wrap">
+<div class="gallery-intro"><p class="eyebrow">7 OCTOBER 2026</p><h1>Walkthrough slides</h1><p>Use Previous and Next to browse. Select the slide image to open it full-size in a new tab.</p></div>
+<section class="slide-viewer" aria-label="Walkthrough slide viewer">
+<div class="slide-controls"><button id="previous" class="slide-button" type="button" disabled>← Previous</button><div id="slide-status" class="slide-status" aria-live="polite"><strong>Cover</strong><span>1 of 26</span></div><button id="next" class="slide-button" type="button">Next →</button></div>
+<a id="slide-link" class="slide-image-link" href="slides/slide-00.png" target="_blank" rel="noopener" aria-label="Open cover slide in a new tab"><img id="slide-image" src="slides/slide-00.png" alt="Walkthrough cover" width="1600" height="900"></a>
+<p class="slide-help">You can also use the left and right arrow keys.</p>
+</section>
+</main>
+<script>
+const titles=['Cover','Administration overview','Customer accounts and roles','Property Owner dashboard','Property Owner progress','Property review: full record','Property review: requests','Multiple legal reviewers','Report-section sharing','Lawyer dashboard: two rounds','Lawyer follow-up review','Lawyer previous-round history','Independent second Lawyer','CA: selected findings only','Broker property support','NV Channel Partner support','Arbitrator matter','Builder / Developer response','Property activity trail','Buyer / Investor opportunities','Buyer enquiry status','Admin buyer enquiry','Market support on an enquiry','Broker enquiry: follow-up round','Enquiry activity trail','Closing slide'];
+const image=document.getElementById('slide-image'),link=document.getElementById('slide-link'),status=document.getElementById('slide-status'),previous=document.getElementById('previous'),next=document.getElementById('next');
+let current=0;
+function show(index){current=Math.max(0,Math.min(titles.length-1,index));const src='slides/slide-'+String(current).padStart(2,'0')+'.png';image.src=src;image.alt=titles[current];link.href=src;link.setAttribute('aria-label','Open '+titles[current]+' in a new tab');status.innerHTML='<strong>'+titles[current]+'</strong><span>'+(current+1)+' of '+titles.length+'</span>';previous.disabled=current===0;next.disabled=current===titles.length-1}
+previous.addEventListener('click',()=>show(current-1));next.addEventListener('click',()=>show(current+1));document.addEventListener('keydown',event=>{if(event.key==='ArrowLeft')show(current-1);if(event.key==='ArrowRight')show(current+1)});
+show(0);
+</script>
+</body>
+</html>
